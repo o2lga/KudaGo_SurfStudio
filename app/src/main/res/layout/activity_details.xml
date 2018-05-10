@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/details_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/details_images_slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/details_iv_height_260dp" />
+            </FrameLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/details_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_height_56dp"
+                app:layout_collapseMode="pin"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/details_nested_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/details_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/details_title_margin_24dp"
+                android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                android:layout_marginRight="@dimen/details_component_margin_16dp"
+                android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                android:textSize="@dimen/details_title_size_20sp"
+                android:textColor="@color/colorTvBlack"/>
+
+            <TextView
+                android:id="@+id/details_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                android:layout_marginRight="@dimen/details_component_margin_16dp"
+                android:textSize="@dimen/details_text_size_16sp"
+                android:textColor="@color/colorTvInfoGrey"
+                tools:text="@string/details_text"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/details_layout_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/details_component_margin_16dp"
+            android:layout_marginRight="@dimen/details_component_margin_16dp"
+            android:layout_marginBottom="@dimen/details_component_margin_8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_location"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/details_tv_info_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_location"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/details_layout_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/details_component_margin_16dp"
+            android:layout_marginRight="@dimen/details_component_margin_16dp"
+            android:layout_marginBottom="@dimen/details_component_margin_8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_date"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/details_tv_info_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_date"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/details_layout_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/details_component_margin_16dp"
+            android:layout_marginRight="@dimen/details_component_margin_16dp"
+            android:layout_marginBottom="@dimen/details_component_margin_16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_ruble"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/details_tv_info_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_price"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

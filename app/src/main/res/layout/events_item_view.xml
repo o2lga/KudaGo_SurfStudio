@@ -1,0 +1,114 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_item_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/main_item_component_margin_16dp"
+    app:cardCornerRadius="@dimen/main_item_card_radius_8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/main_item_iv"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/main_item_iv_height_160dp"/>
+
+        <TextView
+            android:id="@+id/main_item_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/main_item_component_margin_16dp"
+            android:layout_marginLeft="@dimen/main_item_component_margin_16dp"
+            android:layout_marginRight="@dimen/main_item_component_margin_16dp"
+            android:layout_marginBottom="@dimen/main_item_component_margin_8dp"
+            android:textColor="@color/colorTvBlack"
+            android:textSize="@dimen/main_item_title_size_16sp"
+            android:textStyle="bold"
+            tools:text="МУЗЫКАЛЬНЫЙ ФЕСТИВАЛЬ LIVEFEST SUMMER" />
+
+        <TextView
+            android:id="@+id/main_item_tv_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/main_item_component_margin_16dp"
+            android:layout_marginRight="@dimen/main_item_component_margin_16dp"
+            android:layout_marginBottom="@dimen/main_item_component_margin_8dp"
+            android:textColor="@color/colorTvBlack"
+            android:maxLines="2"
+            android:ellipsize="end"
+            tools:text="@string/item_details"/>
+
+        <LinearLayout
+            android:id="@+id/main_item_layout_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/main_item_component_margin_16dp"
+            android:layout_marginRight="@dimen/main_item_component_margin_16dp"
+            android:layout_marginBottom="@dimen/main_item_component_margin_8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_location"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/main_item_tv_info_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_location"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_item_layout_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/main_item_component_margin_16dp"
+            android:layout_marginRight="@dimen/main_item_component_margin_16dp"
+            android:layout_marginBottom="@dimen/main_item_component_margin_8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_date"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/main_item_tv_info_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_date"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/main_item_layout_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/main_item_component_margin_16dp"
+            android:layout_marginRight="@dimen/main_item_component_margin_16dp"
+            android:layout_marginBottom="@dimen/main_item_component_margin_16dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_ruble"
+                android:scaleType="center"/>
+
+            <TextView
+                android:id="@+id/main_item_tv_info_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="@string/item_info_price"
+                style="@style/TextInfo"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

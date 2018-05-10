@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">KudaGo</string>
+
+    <!-- Main screen -->
+    <string name="main_title">Куда сходить</string>
+    <string name="main_tv_no_internet">Ошибка загрузки данных, проверьте соединение с интернетом</string>
+
+    <!-- Strings for layout -->
+    <string name="item_title">Музыкальный фестиваль LiveFest Summer</string>
+    <string name="item_details">Первый фестиваль LiveFest на курорте «Роза Хутор» собрал перспективные музыкальные проекты России и произвёл фурор у публики. Летняя версия будет ещё жарче и динамичнее, охватит ещё больше жанров, откроет новые имена и порадует свежими треками от признанных звёзд.</string>
+    <string name="item_info_location">ЦПКиО им. Горького</string>
+    <string name="item_info_date">10\-11 августа</string>
+    <string name="item_info_price">1 200 \- 1 500 Р</string>
+
+    <string name="details_text">Спустя полгода сочинский курорт «Роза Хутор» снова приглашает меломанов на музыкальный фестиваль LiveFest Summer, в котором объединятся все радости южного отдыха: тёплое море, головокружительные горы, зажигательные танцы и сочные песни от талантливых молодых исполнителей.</string>
+</resources>

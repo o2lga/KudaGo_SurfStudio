@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFFFF</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#E62D37</color>
+
+    <color name="colorBlack">#000000</color>
+
+    <color name="colorTvBlack">#262626</color>
+    <color name="colorTvInfoGrey">#666666</color>
+    <color name="colorIvBackground">#CCCCCC</color>
+</resources>
