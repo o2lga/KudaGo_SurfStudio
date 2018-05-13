@@ -5,7 +5,7 @@
     android:id="@+id/main_item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/main_item_component_margin_16dp"
+    android:layout_marginBottom="@dimen/main_item_component_margin_16dp"
     app:cardCornerRadius="@dimen/main_item_card_radius_8dp">
 
     <LinearLayout
@@ -16,7 +16,8 @@
         <ImageView
             android:id="@+id/main_item_iv"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/main_item_iv_height_160dp"/>
+            android:layout_height="@dimen/main_item_iv_height_160dp"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/main_item_tv_title"
@@ -29,7 +30,8 @@
             android:textColor="@color/colorTvBlack"
             android:textSize="@dimen/main_item_title_size_16sp"
             android:textStyle="bold"
-            tools:text="МУЗЫКАЛЬНЫЙ ФЕСТИВАЛЬ LIVEFEST SUMMER" />
+            android:textAllCaps="true"
+            tools:text="Музыкальный фестиваль LiveFest Summer" />
 
         <TextView
             android:id="@+id/main_item_tv_details"
