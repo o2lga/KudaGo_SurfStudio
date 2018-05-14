@@ -6,7 +6,7 @@
     android:id="@+id/details_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailsActivity">
+    tools:context=".ui.details.DetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -53,6 +53,7 @@
                 android:layout_marginLeft="@dimen/details_component_margin_16dp"
                 android:layout_marginRight="@dimen/details_component_margin_16dp"
                 android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                android:textAllCaps="true"
                 android:textSize="@dimen/details_title_size_20sp"
                 android:textColor="@color/colorTvBlack"/>
 

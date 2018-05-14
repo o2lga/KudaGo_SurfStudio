@@ -46,4 +46,5 @@
 
     <!-- City list item -->
     <dimen name="city_item_size_16sp">16sp</dimen>
+    <dimen name="main_rv_margin_16dp">16dp</dimen>
 </resources>
