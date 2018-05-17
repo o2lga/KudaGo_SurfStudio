@@ -22,17 +22,22 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
 import maxzonov.kudago.model.main.place.Place;
+import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.Utility;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> events;
+    private EventViewHolder holder;
+    private OnEventClickListener eventClickListener;
+
     private static final int ID_LOCATION = 0;
     private static final int ID_DATE = 1;
     private static final int ID_PRICE = 2;
 
-    public EventAdapter(List<Event> events) {
+    public EventAdapter(List<Event> events, OnEventClickListener clickListener) {
         this.events = events;
+        this.eventClickListener = clickListener;
     }
 
     @NonNull
@@ -41,7 +46,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                                               int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.events_item_view, parent, false);
-        return new EventViewHolder(itemView);
+        return new EventViewHolder(itemView, eventClickListener);
     }
 
     @Override
@@ -128,7 +133,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
-    public class EventViewHolder extends RecyclerView.ViewHolder {
+    public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.main_item_tv_title) TextView tvTitle;
         @BindView(R.id.main_item_tv_details) TextView tvDetails;
@@ -141,9 +146,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         @BindView(R.id.main_item_layout_date) LinearLayout layoutDate;
         @BindView(R.id.main_item_layout_price) LinearLayout layoutPrice;
 
-        public EventViewHolder(View itemView) {
+        private OnEventClickListener clickListener;
+
+        public EventViewHolder(View itemView, OnEventClickListener clickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.clickListener = clickListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            clickListener.onEventClick(view, getAdapterPosition());
         }
     }
 }
