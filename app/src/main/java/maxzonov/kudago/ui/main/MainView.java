@@ -9,4 +9,5 @@ import maxzonov.kudago.model.main.Event;
 public interface MainView extends MvpView {
     void showData(ArrayList<Event> events);
     void showProgress(boolean toShow);
+    void finishSwipeRefresh();
 }
