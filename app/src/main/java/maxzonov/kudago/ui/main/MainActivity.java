@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -27,6 +28,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @BindView(R.id.main_rv) RecyclerView recyclerView;
     @BindView(R.id.main_frame) FrameLayout frameLayout;
+    @BindView(R.id.main_pb) ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,5 +49,18 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         EventAdapter eventAdapter = new EventAdapter(events);
         recyclerView.setAdapter(eventAdapter);
 
+    }
+
+    @Override
+    public void showProgress(boolean toShow) {
+        if (toShow) {
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            tvTitle.setVisibility(View.GONE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            tvTitle.setVisibility(View.VISIBLE);
+        }
     }
 }

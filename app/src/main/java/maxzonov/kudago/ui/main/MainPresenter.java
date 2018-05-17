@@ -25,6 +25,7 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     private void handleResponse(ResponseData responseData) {
 
+        getViewState().showProgress(false);
         getViewState().showData(responseData.getEvents());
     }
 
