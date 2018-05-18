@@ -42,96 +42,114 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/details_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/details_title_margin_24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/details_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/details_title_margin_24dp"
+                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                    android:layout_marginRight="@dimen/details_component_margin_16dp"
+                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/details_title_size_20sp"
+                    android:textColor="@color/colorTvBlack"
+                    android:textStyle="bold"
+                    tools:text="Музыкальный фестиваль LiveFest Summer"/>
+
+                <TextView
+                    android:id="@+id/details_subtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                    android:layout_marginRight="@dimen/details_component_margin_16dp"
+                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                    android:textSize="@dimen/details_text_size_16sp"
+                    android:textColor="@color/colorTvBlack"
+                    tools:text="@string/details_text"/>
+
+                <TextView
+                    android:id="@+id/details_full_descr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                    android:layout_marginRight="@dimen/details_component_margin_16dp"
+                    android:textSize="@dimen/details_text_size_16sp"
+                    android:textColor="@color/colorTvInfoGrey"
+                    tools:text="@string/details_text"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/details_layout_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/details_component_margin_16dp"
                 android:layout_marginRight="@dimen/details_component_margin_16dp"
-                android:layout_marginBottom="@dimen/details_component_margin_16dp"
-                android:textAllCaps="true"
-                android:textSize="@dimen/details_title_size_20sp"
-                android:textColor="@color/colorTvBlack"/>
+                android:layout_marginBottom="@dimen/details_component_margin_8dp">
 
-            <TextView
-                android:id="@+id/details_subtitle"
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_location"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/details_tv_info_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/item_info_location"
+                    style="@style/TextInfo"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/details_layout_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/details_component_margin_16dp"
                 android:layout_marginRight="@dimen/details_component_margin_16dp"
-                android:textSize="@dimen/details_text_size_16sp"
-                android:textColor="@color/colorTvInfoGrey"
-                tools:text="@string/details_text"/>
-        </LinearLayout>
+                android:layout_marginBottom="@dimen/details_component_margin_8dp">
 
-        <LinearLayout
-            android:id="@+id/details_layout_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/details_component_margin_16dp"
-            android:layout_marginRight="@dimen/details_component_margin_16dp"
-            android:layout_marginBottom="@dimen/details_component_margin_8dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_date"
+                    android:scaleType="center"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_location"
-                android:scaleType="center"/>
+                <TextView
+                    android:id="@+id/details_tv_info_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/item_info_date"
+                    style="@style/TextInfo"/>
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/details_tv_info_location"
+            <LinearLayout
+                android:id="@+id/details_layout_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="@string/item_info_location"
-                style="@style/TextInfo"/>
-        </LinearLayout>
+                android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                android:layout_marginRight="@dimen/details_component_margin_16dp"
+                android:layout_marginBottom="@dimen/details_component_margin_16dp">
 
-        <LinearLayout
-            android:id="@+id/details_layout_date"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/details_component_margin_16dp"
-            android:layout_marginRight="@dimen/details_component_margin_16dp"
-            android:layout_marginBottom="@dimen/details_component_margin_8dp">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_ruble"
+                    android:scaleType="center"/>
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_date"
-                android:scaleType="center"/>
-
-            <TextView
-                android:id="@+id/details_tv_info_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="@string/item_info_date"
-                style="@style/TextInfo"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/details_layout_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/details_component_margin_16dp"
-            android:layout_marginRight="@dimen/details_component_margin_16dp"
-            android:layout_marginBottom="@dimen/details_component_margin_16dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_ruble"
-                android:scaleType="center"/>
-
-            <TextView
-                android:id="@+id/details_tv_info_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="@string/item_info_price"
-                style="@style/TextInfo"/>
+                <TextView
+                    android:id="@+id/details_tv_info_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="@string/item_info_price"
+                    style="@style/TextInfo"/>
+            </LinearLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
