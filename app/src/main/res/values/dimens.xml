@@ -10,7 +10,10 @@
     <dimen name="main_toolbar_tall_height_68dp">68dp</dimen>
     <dimen name="main_title_margin_16dp">16dp</dimen>
     <dimen name="main_rv_margin_8dp">8dp</dimen>
+    <dimen name="main_rv_margin_16dp">16dp</dimen>
     <dimen name="main_pb_size_32dp">32dp</dimen>
+    <dimen name="main_no_internet_margin_16dp">16dp</dimen>
+    <dimen name="main_no_internet_margin_26dp">26dp</dimen>
 
     <!-- Main list item -->
     <dimen name="main_item_card_radius_8dp">8dp</dimen>
@@ -47,5 +50,4 @@
 
     <!-- City list item -->
     <dimen name="city_item_size_16sp">16sp</dimen>
-    <dimen name="main_rv_margin_16dp">16dp</dimen>
 </resources>
