@@ -36,7 +36,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     private OnEventClickListener eventClickListener;
 
     @BindView(R.id.main_rv) RecyclerView recyclerView;
-    @BindView(R.id.main_frame) FrameLayout frameLayout;
     @BindView(R.id.main_pb) ProgressBar progressBar;
     @BindView(R.id.main_tv_title) TextView tvTitle;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
@@ -54,6 +53,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         showProgress(true);
         swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
+        recyclerView.setNestedScrollingEnabled(false);
 
         compositeDisposable = new CompositeDisposable();
 
