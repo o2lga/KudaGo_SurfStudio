@@ -52,10 +52,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         setSupportActionBar(toolbar);
 
         showProgress(true);
-        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
         recyclerView.setNestedScrollingEnabled(false);
 
         compositeDisposable = new CompositeDisposable();
+        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
+        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
 
         mainPresenter.getData(compositeDisposable);
 
