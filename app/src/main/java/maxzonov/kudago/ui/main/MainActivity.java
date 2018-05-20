@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
@@ -39,14 +40,15 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @BindView(R.id.main_pb) ProgressBar progressBar;
     @BindView(R.id.main_tv_title) TextView tvTitle;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
-
     @BindView(R.id.main_toolbar) Toolbar toolbar;
+
+    private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 
@@ -62,6 +64,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             intent.putExtra("position", position);
             startActivity(intent);
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     @Override
