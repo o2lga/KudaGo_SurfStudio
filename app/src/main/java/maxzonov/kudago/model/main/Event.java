@@ -22,6 +22,9 @@ public class Event {
     @SerializedName("description")
     private String description;
 
+    @SerializedName("body_text")
+    private String fullDescription;
+
     @SerializedName("place")
     private Place place;
 
@@ -61,6 +64,14 @@ public class Event {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getFullDescription() {
+        return fullDescription;
+    }
+
+    public void setFullDescription(String fullDescription) {
+        this.fullDescription = fullDescription;
     }
 
     public Place getPlace() {
