@@ -21,28 +21,28 @@ import butterknife.ButterKnife;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
-import maxzonov.kudago.model.main.place.Place;
+import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.Utility;
 
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> events;
-    private EventViewHolder holder;
+    private ArrayList<PlaceDetail> placeDetails;
     private OnEventClickListener eventClickListener;
 
-    private static final int ID_LOCATION = 0;
-    private static final int ID_DATE = 1;
-    private static final int ID_PRICE = 2;
+    private static final int ID_DATE = 0;
+    private static final int ID_PRICE = 1;
 
-    public EventAdapter(List<Event> events, OnEventClickListener clickListener) {
+    public EventAdapter(List<Event> events, OnEventClickListener clickListener, ArrayList<PlaceDetail> placeDetails) {
         this.events = events;
         this.eventClickListener = clickListener;
+        this.placeDetails = placeDetails;
     }
 
     @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(ViewGroup parent,
+    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                               int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.events_item_view, parent, false);
@@ -51,12 +51,20 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
-        Event event = events.get(position);
 
-        Place place = event.getPlace();
+        PlaceDetail placeDetail = placeDetails.get(position);
+        Event event = events.get(position);
         ArrayList<Date> dates = event.getDates();
 
-        checkInfoModelAndShow(holder, dates, place);
+        if (placeDetail != null) {
+            String placeTitle = placeDetail.getTitle();
+            String fixedPlaceTitle = placeTitle.substring(0, 1).toUpperCase() + placeTitle.substring(1);
+            holder.tvInfoLocation.setText(fixedPlaceTitle);
+        } else {
+            holder.layoutLocation.setVisibility(View.GONE);
+        }
+
+        formatAndShowDate(holder, dates);
 
         // Get first image for item
         String imageUrl = "";
@@ -88,12 +96,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
         return events.size();
     }
-
-    private void checkInfoModelAndShow(EventViewHolder holder, ArrayList<Date> dates, Place place) {
-        if (place != null)
-            showInfoLayout(holder, ID_LOCATION, place.getId());
-        else
-            holder.layoutLocation.setVisibility(View.GONE);
+    
+    private void formatAndShowDate(EventViewHolder holder, ArrayList<Date> dates) {
 
         int datesSize = dates.size();
 
@@ -112,12 +116,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private void showInfoLayout(EventViewHolder holder, int infoId, String infoContent) {
         switch (infoId) {
-            case ID_LOCATION:
-                if (!infoContent.equals(""))
-                    holder.tvInfoLocation.setText(infoContent);
-                else
-                    holder.layoutLocation.setVisibility(View.GONE);
-                break;
             case ID_DATE:
                 if (!infoContent.equals(""))
                     holder.tvInfoDate.setText(infoContent);

@@ -3,14 +3,10 @@ package maxzonov.kudago.ui.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,6 +21,7 @@ import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
+import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
 import maxzonov.kudago.utils.OnEventClickListener;
@@ -34,6 +31,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @InjectPresenter MainPresenter mainPresenter;
     private CompositeDisposable compositeDisposable;
     private OnEventClickListener eventClickListener;
+    private ArrayList<Event> events = new ArrayList<>();
 
     @BindView(R.id.main_rv) RecyclerView recyclerView;
     @BindView(R.id.main_pb) ProgressBar progressBar;
@@ -61,8 +59,15 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         mainPresenter.getData(compositeDisposable);
 
         eventClickListener = ((view, position) -> {
+            Event event = events.get(position);
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-            intent.putExtra("position", position);
+            intent.putExtra("title", event.getTitle());
+
+            intent.putExtra("descr", event.getDescription());
+            intent.putExtra("full_descr", event.getFullDescription());
+            intent.putExtra("place", event.getPlace().getId());
+            intent.putExtra("price", event.getPrice());
+            intent.putExtra("image", event.getImages().get(0).getImageUrl());
             startActivity(intent);
         });
     }
@@ -74,13 +79,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     }
 
     @Override
-    public void showData(ArrayList<Event> events) {
+    public void showData(ArrayList<Event> events, ArrayList<PlaceDetail> placeDetails) {
+        this.events = events;
+
         LinearLayoutManager layoutManagerCategory =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManagerCategory);
-        EventAdapter eventAdapter = new EventAdapter(events, eventClickListener);
+        EventAdapter eventAdapter = new EventAdapter(events, eventClickListener, placeDetails);
         recyclerView.setAdapter(eventAdapter);
-
     }
 
     @Override
