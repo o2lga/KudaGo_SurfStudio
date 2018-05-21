@@ -2,20 +2,23 @@ package maxzonov.kudago.ui.details;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import maxzonov.kudago.R;
+import maxzonov.kudago.ui.adapter.ViewPagerAdapter;
+import me.relex.circleindicator.CircleIndicator;
 
 public class DetailsActivity extends MvpAppCompatActivity implements DetailsView {
 
@@ -27,7 +30,7 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
     @BindView(R.id.details_tv_info_price) TextView tvPrice;
     @BindView(R.id.details_tv_info_location) TextView tvLocation;
     @BindView(R.id.details_tv_info_date) TextView tvDate;
-    @BindView(R.id.details_images) ImageView imageView;
+//    @BindView(R.id.details_images) ImageView imageView;
 
     @BindView(R.id.details_layout_location) LinearLayout layoutLocation;
     @BindView(R.id.details_layout_date) LinearLayout layoutDate;
@@ -41,13 +44,22 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         setContentView(R.layout.activity_details);
         unbinder = ButterKnife.bind(this);
 
+        ViewPager viewPager = findViewById(R.id.details_viewpager);
+
+        ArrayList<String> strings = new ArrayList<>(getIntent().getStringArrayListExtra("images"));
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(this, strings);
+        CircleIndicator indicator = findViewById(R.id.circle_indicator);
+        viewPager.setAdapter(adapter);
+        indicator.setViewPager(viewPager);
+
         tvTitle.setText(getIntent().getStringExtra("title"));
         setTextWithHtml(tvSubTitle, getIntent().getStringExtra("descr"));
         setTextWithHtml(tvFullDescr, getIntent().getStringExtra("full_descr"));
         emptyInfoHandling(getIntent().getStringExtra("place"), layoutLocation, tvLocation);
         emptyInfoHandling(getIntent().getStringExtra("date"), layoutDate, tvDate);
         emptyInfoHandling(getIntent().getStringExtra("price"), layoutPrice, tvPrice);
-        Picasso.get().load(getIntent().getStringExtra("image")).into(imageView);
+//        Picasso.get().load(getIntent().getStringExtra("image")).into(imageView);
     }
 
     @Override

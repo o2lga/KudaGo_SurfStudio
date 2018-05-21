@@ -36,10 +36,12 @@ ext {
     rxJavaVersion = "2.1.1"
     rxAndroidVersion = "2.0.1"
     retrofitAdapterVersion = "1.0.0"
+    indicatorVersion = "1.2.2@aar"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.android.support:support-vector-drawable:$supportLibraryVersion"
@@ -74,4 +76,6 @@ dependencies {
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+
+    implementation "me.relex:circleindicator:$indicatorVersion"
 }

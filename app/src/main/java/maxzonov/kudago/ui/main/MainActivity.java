@@ -68,6 +68,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         eventClickListener = ((view, position) -> {
             Event event = events.get(position);
+
+            ArrayList<String> imageUrls = new ArrayList<>();
+            for (int i = 0; i < event.getImages().size(); i++) {
+                imageUrls.add(event.getImages().get(i).getImageUrl());
+            }
+
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
             intent.putExtra("title", event.getTitle());
 
@@ -75,7 +81,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             intent.putExtra("full_descr", event.getFullDescription());
             intent.putExtra("place", event.getPlace().getId());
             intent.putExtra("price", event.getPrice());
-            intent.putExtra("image", event.getImages().get(0).getImageUrl());
+//            intent.putExtra("image", event.getImages().get(0).getImageUrl());
+            intent.putStringArrayListExtra("images", imageUrls);
             startActivity(intent);
         });
 
