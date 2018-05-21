@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
 import maxzonov.kudago.utils.OnEventClickListener;
+import maxzonov.kudago.utils.Utility;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
@@ -39,24 +41,30 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.main_toolbar) Toolbar toolbar;
 
+    @BindView(R.id.main_layout_no_internet) LinearLayout layoutNoInternet;
+    @BindView(R.id.main_layout_content) LinearLayout layoutContent;
+
     private Unbinder unbinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        unbinder = ButterKnife.bind(this);
-
         setSupportActionBar(toolbar);
+
+        unbinder = ButterKnife.bind(this);
+        compositeDisposable = new CompositeDisposable();
 
         showProgress(true);
         recyclerView.setNestedScrollingEnabled(false);
 
-        compositeDisposable = new CompositeDisposable();
-        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
-        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
-
-        mainPresenter.getData(compositeDisposable);
+        if (Utility.isNetworkAvailable(this)) {
+            mainPresenter.getData(compositeDisposable);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            layoutContent.setVisibility(View.GONE);
+            layoutNoInternet.setVisibility(View.VISIBLE);
+        }
 
         eventClickListener = ((view, position) -> {
             Event event = events.get(position);
@@ -70,6 +78,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             intent.putExtra("image", event.getImages().get(0).getImageUrl());
             startActivity(intent);
         });
+
+        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
+        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
     }
 
     @Override
@@ -93,12 +104,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     public void showProgress(boolean toShow) {
         if (toShow) {
             progressBar.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            tvTitle.setVisibility(View.GONE);
+            layoutContent.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            tvTitle.setVisibility(View.VISIBLE);
+            layoutContent.setVisibility(View.VISIBLE);
         }
     }
 

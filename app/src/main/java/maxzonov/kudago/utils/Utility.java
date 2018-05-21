@@ -1,5 +1,9 @@
 package maxzonov.kudago.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,5 +39,15 @@ public class Utility {
         }
 
         return result;
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            return  (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED);
+        } return false;
     }
 }
