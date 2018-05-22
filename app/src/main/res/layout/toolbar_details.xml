@@ -7,6 +7,7 @@
     android:background="@color/colorTransparent">
 
     <ImageButton
+        android:id="@+id/details_toolbar_btn_back"
         android:layout_width="48dp"
         android:layout_height="32dp"
         android:layout_marginTop="14dp"

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import maxzonov.kudago.R;
 import maxzonov.kudago.ui.adapter.ViewPagerAdapter;
@@ -30,7 +32,6 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
     @BindView(R.id.details_tv_info_price) TextView tvPrice;
     @BindView(R.id.details_tv_info_location) TextView tvLocation;
     @BindView(R.id.details_tv_info_date) TextView tvDate;
-//    @BindView(R.id.details_images) ImageView imageView;
 
     @BindView(R.id.details_layout_location) LinearLayout layoutLocation;
     @BindView(R.id.details_layout_date) LinearLayout layoutDate;
@@ -59,13 +60,17 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         emptyInfoHandling(getIntent().getStringExtra("place"), layoutLocation, tvLocation);
         emptyInfoHandling(getIntent().getStringExtra("date"), layoutDate, tvDate);
         emptyInfoHandling(getIntent().getStringExtra("price"), layoutPrice, tvPrice);
-//        Picasso.get().load(getIntent().getStringExtra("image")).into(imageView);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @OnClick(R.id.details_toolbar_btn_back)
+    void onBackClick() {
+        onBackPressed();
     }
 
     private void emptyInfoHandling(String info, LinearLayout layout, TextView textView) {
