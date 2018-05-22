@@ -22,6 +22,7 @@ import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
+import maxzonov.kudago.model.main.place.Place;
 import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
@@ -67,6 +68,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         }
 
         eventClickListener = ((view, position) -> {
+            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+
             Event event = events.get(position);
 
             ArrayList<String> imageUrls = new ArrayList<>();
@@ -74,14 +77,21 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 imageUrls.add(event.getImages().get(i).getImageUrl());
             }
 
-            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-            intent.putExtra("title", event.getTitle());
+            Place place = event.getPlace();
+            ArrayList<String> coords = new ArrayList<>();
+            if (place != null) {
+                coords.add(place.getCoords().getLatitude());
+                coords.add(place.getCoords().getLongitude());
+                intent.putExtra("place", event.getPlace().getTitle());
+                intent.putStringArrayListExtra("coords", coords);
+            } else {
+                intent.putExtra("place", "");
+            }
 
+            intent.putExtra("title", event.getTitle());
             intent.putExtra("descr", event.getDescription());
             intent.putExtra("full_descr", event.getFullDescription());
-            intent.putExtra("place", event.getPlace().getId());
             intent.putExtra("price", event.getPrice());
-//            intent.putExtra("image", event.getImages().get(0).getImageUrl());
             intent.putStringArrayListExtra("images", imageUrls);
             startActivity(intent);
         });

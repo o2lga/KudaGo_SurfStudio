@@ -30,6 +30,8 @@
     <dimen name="details_map_height_200dp">200dp</dimen>
     <dimen name="details_info_margin_24dp">24dp</dimen>
     <dimen name="details_page_indicator_size_8dp">8dp</dimen>
+    <dimen name="details_component_margin_24dp">24dp</dimen>
+    <dimen name="details_info_image_size_24dp">24dp</dimen>
 
     <!-- City list item -->
     <dimen name="city_item_height_56dp">56dp</dimen>

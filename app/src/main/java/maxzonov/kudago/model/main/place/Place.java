@@ -37,7 +37,7 @@ public class Place {
         this.coords = coords;
     }
 
-    class Coords {
+    public class Coords {
 
         @SerializedName("lat")
         private String latitude;

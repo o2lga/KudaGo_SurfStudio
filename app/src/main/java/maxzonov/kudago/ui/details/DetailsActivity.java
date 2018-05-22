@@ -5,12 +5,20 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -22,7 +30,7 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.ui.adapter.ViewPagerAdapter;
 import me.relex.circleindicator.CircleIndicator;
 
-public class DetailsActivity extends MvpAppCompatActivity implements DetailsView {
+public class DetailsActivity extends MvpAppCompatActivity implements DetailsView, OnMapReadyCallback {
 
     @InjectPresenter DetailsPresenter detailsPresenter;
 
@@ -36,6 +44,12 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
     @BindView(R.id.details_layout_location) LinearLayout layoutLocation;
     @BindView(R.id.details_layout_date) LinearLayout layoutDate;
     @BindView(R.id.details_layout_price) LinearLayout layoutPrice;
+
+    @BindView(R.id.details_map_view) MapView mapView;
+
+    private GoogleMap googleMap;
+
+    private Double latitude, longitude;
 
     private Unbinder unbinder;
 
@@ -54,12 +68,39 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         viewPager.setAdapter(adapter);
         indicator.setViewPager(viewPager);
 
+        if (!getIntent().getStringExtra("place").equals("")) {
+            latitude = Double.parseDouble(getIntent().getStringArrayListExtra("coords").get(0));
+            longitude = Double.parseDouble(getIntent().getStringArrayListExtra("coords").get(1));
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        } else {
+            mapView.setVisibility(View.GONE);
+        }
+
         tvTitle.setText(getIntent().getStringExtra("title"));
         setTextWithHtml(tvSubTitle, getIntent().getStringExtra("descr"));
         setTextWithHtml(tvFullDescr, getIntent().getStringExtra("full_descr"));
         emptyInfoHandling(getIntent().getStringExtra("place"), layoutLocation, tvLocation);
         emptyInfoHandling(getIntent().getStringExtra("date"), layoutDate, tvDate);
         emptyInfoHandling(getIntent().getStringExtra("price"), layoutPrice, tvPrice);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        MapsInitializer.initialize(this);
+
+        this.googleMap = googleMap;
+
+        googleMap.addMarker(new MarkerOptions()
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
+                .position(new LatLng(latitude, longitude)));
+
+        googleMap.moveCamera(CameraUpdateFactory
+                .newCameraPosition(CameraPosition.builder()
+                        .target(new LatLng(latitude, longitude))
+                        .zoom(16)
+                        .build()));
     }
 
     @Override

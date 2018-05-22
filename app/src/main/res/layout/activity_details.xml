@@ -67,6 +67,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/details_component_margin_24dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -109,14 +110,13 @@
                 android:id="@+id/details_layout_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/details_info_margin_24dp"
                 android:layout_marginLeft="@dimen/details_component_margin_16dp"
                 android:layout_marginRight="@dimen/details_component_margin_16dp"
                 android:layout_marginBottom="@dimen/details_component_margin_8dp">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/details_info_image_size_24dp"
+                    android:layout_height="@dimen/details_info_image_size_24dp"
                     android:src="@drawable/ic_location"
                     android:scaleType="center"/>
 
@@ -137,8 +137,8 @@
                 android:layout_marginBottom="@dimen/details_component_margin_8dp">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/details_info_image_size_24dp"
+                    android:layout_height="@dimen/details_info_image_size_24dp"
                     android:src="@drawable/ic_date"
                     android:scaleType="center"/>
 
@@ -155,12 +155,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                android:layout_marginRight="@dimen/details_component_margin_16dp"
-                android:layout_marginBottom="@dimen/details_component_margin_16dp">
+                android:layout_marginRight="@dimen/details_component_margin_16dp">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/details_info_image_size_24dp"
+                    android:layout_height="@dimen/details_info_image_size_24dp"
                     android:src="@drawable/ic_ruble"
                     android:scaleType="center"/>
 
@@ -171,6 +170,12 @@
                     tools:text="@string/item_info_price"
                     style="@style/TextInfo"/>
             </LinearLayout>
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/details_map_view"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/details_map_height_200dp"
+                android:layout_marginTop="@dimen/details_component_margin_24dp"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

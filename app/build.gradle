@@ -37,6 +37,7 @@ ext {
     rxAndroidVersion = "2.0.1"
     retrofitAdapterVersion = "1.0.0"
     indicatorVersion = "1.2.2@aar"
+    gmsVersion = "15.0.0"
 }
 
 dependencies {
@@ -78,4 +79,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
 
     implementation "me.relex:circleindicator:$indicatorVersion"
+
+    implementation "com.google.android.gms:play-services-maps:$gmsVersion"
 }
