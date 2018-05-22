@@ -97,13 +97,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     }
 
     @Override
-    public void showData(ArrayList<Event> events, ArrayList<PlaceDetail> placeDetails) {
+    public void showData(ArrayList<Event> events) {
         this.events = events;
 
         LinearLayoutManager layoutManagerCategory =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManagerCategory);
-        EventAdapter eventAdapter = new EventAdapter(events, eventClickListener, placeDetails);
+        EventAdapter eventAdapter = new EventAdapter(events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
     }
 

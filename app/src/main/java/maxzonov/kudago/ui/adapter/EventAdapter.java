@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
+import maxzonov.kudago.model.main.place.Place;
 import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.Utility;
@@ -28,16 +29,14 @@ import maxzonov.kudago.utils.Utility;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<Event> events;
-    private ArrayList<PlaceDetail> placeDetails;
     private OnEventClickListener eventClickListener;
 
     private static final int ID_DATE = 0;
     private static final int ID_PRICE = 1;
 
-    public EventAdapter(List<Event> events, OnEventClickListener clickListener, ArrayList<PlaceDetail> placeDetails) {
+    public EventAdapter(List<Event> events, OnEventClickListener clickListener) {
         this.events = events;
         this.eventClickListener = clickListener;
-        this.placeDetails = placeDetails;
     }
 
     @NonNull
@@ -52,17 +51,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @Override
     public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
 
-        PlaceDetail placeDetail = placeDetails.get(position);
         Event event = events.get(position);
         ArrayList<Date> dates = event.getDates();
-
-        if (placeDetail != null) {
-            String placeTitle = placeDetail.getTitle();
-            String fixedPlaceTitle = placeTitle.substring(0, 1).toUpperCase() + placeTitle.substring(1);
-            holder.tvInfoLocation.setText(fixedPlaceTitle);
-        } else {
-            holder.layoutLocation.setVisibility(View.GONE);
-        }
 
         formatAndShowDate(holder, dates);
 
@@ -86,6 +76,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
 
         showInfoLayout(holder, ID_PRICE, event.getPrice());
+        showLocation(holder, event.getPlace());
 
     }
 
@@ -128,6 +119,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 else
                     holder.layoutPrice.setVisibility(View.GONE);
                 break;
+        }
+    }
+
+    private void showLocation(EventViewHolder holder, Place place) {
+        if (place != null) {
+            holder.tvInfoLocation.setText(place.getTitle());
+        } else {
+            holder.layoutLocation.setVisibility(View.GONE);
         }
     }
 

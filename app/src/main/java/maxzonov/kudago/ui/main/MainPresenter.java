@@ -38,43 +38,9 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     private void handleResponse(ResponseData responseData) {
 
-        ArrayList<Event> events = responseData.getEvents();
-        PlaceApiService placeApiService = RetrofitClient.getPlaceApiService();
-        int eventsSize = events.size();
-
-        for (int i = 0; i < eventsSize; i++) {
-            Place place = responseData.getEvents().get(i).getPlace();
-            if (place != null) {
-                Call<PlaceDetail> call = placeApiService.getPlaceJson(place.getId());
-
-                Thread thread = new Thread(() -> {
-                    try {
-                        Response<PlaceDetail> response = call.execute();
-                        if (response.isSuccessful()) {
-                            placeDetails.add(response.body());
-                        } else {
-                            Log.d("myLog", String.valueOf(response.message()));
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                thread.start();
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                placeDetails.add(null);
-            }
-        }
-
-        ArrayList<PlaceDetail> details = new ArrayList<>(placeDetails);
         getViewState().showProgress(false);
         getViewState().finishSwipeRefresh();
-        getViewState().showData(responseData.getEvents(), details);
+        getViewState().showData(responseData.getEvents());
     }
 
     private void handleResponseError(Throwable error) {
