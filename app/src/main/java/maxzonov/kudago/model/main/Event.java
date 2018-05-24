@@ -13,6 +13,9 @@ public class Event {
     @SerializedName("id")
     private int id;
 
+    @SerializedName("next")
+    private String nextPage;
+
     @SerializedName("images")
     private ArrayList<Image> images;
 
@@ -40,6 +43,14 @@ public class Event {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getNextPage() {
+        return nextPage;
+    }
+
+    public void setNextPage(String nextPage) {
+        this.nextPage = nextPage;
     }
 
     public ArrayList<Image> getImages() {
