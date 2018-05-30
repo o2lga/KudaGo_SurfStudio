@@ -2,6 +2,7 @@ package maxzonov.kudago.ui.adapter;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -22,17 +24,21 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
 import maxzonov.kudago.model.main.place.Place;
-import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.Utility;
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
+public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<Event> events;
     private OnEventClickListener eventClickListener;
 
-    private static final int ID_DATE = 0;
-    private static final int ID_PRICE = 1;
+    private static final int DEFAULT_LOADING = 0;
+    private static final int PAGINATION_LOADING = 1;
+
+    private static final int ID_DATE = 10;
+    private static final int ID_PRICE = 11;
+
+    private boolean isLoadingAdded = false;
 
     public EventAdapter(List<Event> events, OnEventClickListener clickListener) {
         this.events = events;
@@ -41,42 +47,69 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     @NonNull
     @Override
-    public EventViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                              int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.events_item_view, parent, false);
-        return new EventViewHolder(itemView, eventClickListener);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                      int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType) {
+            case DEFAULT_LOADING:
+                View itemView = inflater.inflate(R.layout.events_item_view, parent, false);
+                viewHolder = new EventViewHolder(itemView, eventClickListener);
+                break;
+
+            case PAGINATION_LOADING:
+                View viewPagination = inflater.inflate(R.layout.progress_item_view, parent, false);
+                viewHolder = new PaginationViewHolder(viewPagination);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        Event event = events.get(position);
-        ArrayList<Date> dates = event.getDates();
+        switch (getItemViewType(position)) {
 
-        formatAndShowDate(holder, dates);
+            case DEFAULT_LOADING:
 
-        // Get first image for item
-        String imageUrl = "";
-        try {
-            imageUrl = event.getImages().get(0).getImageUrl();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+                final EventViewHolder eventViewHolder = (EventViewHolder) holder;
+
+                Event event = events.get(position);
+                ArrayList<Date> dates = event.getDates();
+
+                formatAndShowDate(eventViewHolder, dates);
+
+                // Get first image for item
+                String imageUrl = "";
+                try {
+                    imageUrl = event.getImages().get(0).getImageUrl();
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                if (eventViewHolder.ivPhoto != null) {
+                    Picasso.get().load(imageUrl).into(eventViewHolder.ivPhoto);
+                }
+
+                eventViewHolder.tvTitle.setText(event.getTitle());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    eventViewHolder.tvDetails.setText(Html.fromHtml(event.getDescription(), Html.FROM_HTML_MODE_COMPACT));
+                } else {
+                    eventViewHolder.tvDetails.setText(Html.fromHtml(event.getDescription()));
+                }
+
+                showInfoLayout(eventViewHolder, ID_PRICE, event.getPrice());
+                showLocation(eventViewHolder, event.getPlace());
+                break;
+
+            case PAGINATION_LOADING:
+                final PaginationViewHolder paginationViewHolder = (PaginationViewHolder) holder;
+
+                paginationViewHolder.progressBar.setVisibility(View.VISIBLE);
+
+                break;
         }
-
-        if (holder.ivPhoto != null) {
-            Picasso.get().load(imageUrl).into(holder.ivPhoto);
-        }
-
-        holder.tvTitle.setText(event.getTitle());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            holder.tvDetails.setText(Html.fromHtml(event.getDescription(), Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            holder.tvDetails.setText(Html.fromHtml(event.getDescription()));
-        }
-
-        showInfoLayout(holder, ID_PRICE, event.getPrice());
-        showLocation(holder, event.getPlace());
 
     }
 
@@ -87,7 +120,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
         return events.size();
     }
-    
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return DEFAULT_LOADING;
+        } else {
+            return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
+        }
+    }
+
     private void formatAndShowDate(EventViewHolder holder, ArrayList<Date> dates) {
 
         int datesSize = dates.size();
@@ -130,6 +172,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
+    public void addToAdapterArray(ArrayList<Event> resultEvents) {
+        events.addAll(resultEvents);
+        notifyItemInserted(events.size() - 1);
+    }
+
     public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.main_item_tv_title) TextView tvTitle;
@@ -155,6 +202,17 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         @Override
         public void onClick(View view) {
             clickListener.onEventClick(view, getAdapterPosition());
+        }
+    }
+
+    public class PaginationViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.pagination_pb) ProgressBar progressBar;
+        @BindView(R.id.pagination_layout) ConstraintLayout layout;
+
+        public PaginationViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

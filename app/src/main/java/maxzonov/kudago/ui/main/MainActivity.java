@@ -18,12 +18,15 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.disposables.CompositeDisposable;
+import maxzonov.kudago.model.City;
+import maxzonov.kudago.ui.city.CityActivity;
 import maxzonov.kudago.R;
+import maxzonov.kudago.model.ResponseData;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.place.Place;
-import maxzonov.kudago.model.main.place.PlaceDetail;
 import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
 import maxzonov.kudago.utils.OnEventClickListener;
@@ -32,18 +35,29 @@ import maxzonov.kudago.utils.Utility;
 public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @InjectPresenter MainPresenter mainPresenter;
+
+    private static final int CITY_REQUEST = 101;
+
     private CompositeDisposable compositeDisposable;
     private OnEventClickListener eventClickListener;
     private ArrayList<Event> events = new ArrayList<>();
+    private ResponseData responseData = new ResponseData();
+
+    private String currentCity = "msk";
+    private ArrayList<City> cities = new ArrayList<>();
 
     @BindView(R.id.main_rv) RecyclerView recyclerView;
     @BindView(R.id.main_pb) ProgressBar progressBar;
-    @BindView(R.id.main_tv_title) TextView tvTitle;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.main_toolbar) Toolbar toolbar;
 
     @BindView(R.id.main_layout_no_internet) LinearLayout layoutNoInternet;
     @BindView(R.id.main_layout_content) LinearLayout layoutContent;
+
+    @BindView(R.id.main_toolbar_tv_city) TextView tvToolbarCity;
+
+    private LinearLayoutManager layoutManager;
+    private EventAdapter eventAdapter;
 
     private Unbinder unbinder;
 
@@ -52,15 +66,20 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setSupportActionBar(toolbar);
-
         unbinder = ButterKnife.bind(this);
+
         compositeDisposable = new CompositeDisposable();
 
         showProgress(true);
         recyclerView.setNestedScrollingEnabled(false);
 
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+
+        recyclerView.setLayoutManager(layoutManager);
+        eventAdapter = new EventAdapter(events, eventClickListener);
+        recyclerView.setAdapter(eventAdapter);
         if (Utility.isNetworkAvailable(this)) {
-            mainPresenter.getData(compositeDisposable);
+            mainPresenter.getData(compositeDisposable, "msk");
         } else {
             progressBar.setVisibility(View.GONE);
             layoutContent.setVisibility(View.GONE);
@@ -96,8 +115,26 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             startActivity(intent);
         });
 
-        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable));
+        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable, currentCity));
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == CITY_REQUEST) {
+            events.clear();
+            showProgress(true);
+
+            int cityId = data.getIntExtra("city", 0);
+            String cityName = cities.get(cityId).getName();
+            String citySlug = cities.get(cityId).getSlug();
+            currentCity = citySlug;
+
+            tvToolbarCity.setText(cityName);
+            mainPresenter.getData(compositeDisposable, citySlug);
+        }
     }
 
     @Override
@@ -106,14 +143,25 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         unbinder.unbind();
     }
 
-    @Override
-    public void showData(ArrayList<Event> events) {
-        this.events = events;
+    @OnClick(R.id.main_toolbar_city_layout)
+    void onToolbarClicked() {
+        ArrayList<String> stringsCity = new ArrayList<>();
+        int citySize = cities.size();
+        for (int i = 0; i < citySize; i++) {
+            City itemCity = cities.get(i);
+            stringsCity.add(itemCity.getName());
+        }
+        Intent intent = new Intent(MainActivity.this, CityActivity.class);
+        intent.putStringArrayListExtra("cities", stringsCity);
+        startActivityForResult(intent, CITY_REQUEST);
+    }
 
-        LinearLayoutManager layoutManagerCategory =
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManagerCategory);
-        EventAdapter eventAdapter = new EventAdapter(events, eventClickListener);
+    @Override
+    public void showData(ResponseData responseData) {
+        this.events = responseData.getEvents();
+        this.responseData = responseData;
+//        eventAdapter.addToAdapterArray(responseData.getEvents());
+        eventAdapter = new EventAdapter(responseData.getEvents(), eventClickListener);
         recyclerView.setAdapter(eventAdapter);
     }
 
@@ -131,5 +179,10 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public void finishSwipeRefresh() {
         swipeRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void persistCities(ArrayList<City> cities) {
+        this.cities = cities;
     }
 }

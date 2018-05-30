@@ -4,11 +4,12 @@ import com.arellomobile.mvp.MvpView;
 
 import java.util.ArrayList;
 
-import maxzonov.kudago.model.main.Event;
-import maxzonov.kudago.model.main.place.PlaceDetail;
+import maxzonov.kudago.model.City;
+import maxzonov.kudago.model.ResponseData;
 
 public interface MainView extends MvpView {
-    void showData(ArrayList<Event> events);
+    void showData(ResponseData responseData);
     void showProgress(boolean toShow);
     void finishSwipeRefresh();
+    void persistCities(ArrayList<City> cities);
 }
