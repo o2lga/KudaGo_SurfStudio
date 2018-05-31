@@ -12,12 +12,16 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import maxzonov.kudago.model.City;
 import maxzonov.kudago.model.ResponseData;
-import maxzonov.kudago.retrofit.ApiService;
+import maxzonov.kudago.retrofit.EventApiService;
 import maxzonov.kudago.retrofit.CityApiService;
 import maxzonov.kudago.retrofit.RetrofitClient;
 
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
+
+    private static final String FIRST_PAGE_TO_LOAD = "1";
+    private static final String CITY_MOSCOW_NAME = "Москва";
+    private static final String CITY_SAINT_PETERSBURG_NAME = "Санкт-Петербург";
 
     public void getData(CompositeDisposable compositeDisposable, String citySlug) {
 
@@ -27,21 +31,21 @@ public class MainPresenter extends MvpPresenter<MainView> {
                 .subscribeOn(Schedulers.io())
                 .subscribe(this::handleCityDataResponse));
 
-        ApiService apiService = RetrofitClient.getApiService();
-        compositeDisposable.add(apiService.getJson(citySlug, "1")
+        EventApiService eventApiService = RetrofitClient.getApiService();
+        compositeDisposable.add(eventApiService.getJson(citySlug, FIRST_PAGE_TO_LOAD)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(this::handleDataResponse, this::handleDataResponseError));
+                .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
     }
 
     private void handleCityDataResponse(ArrayList<City> cities) {
         ArrayList<City> sortedCities = new ArrayList<>();
         for (City city : cities) {
             switch (city.getName()) {
-                case "Москва":
+                case CITY_MOSCOW_NAME:
                     sortedCities.add(0, city);
                     break;
-                case "Санкт-Петербург":
+                case CITY_SAINT_PETERSBURG_NAME:
                     sortedCities.add(1, city);
                     break;
                 default:
@@ -52,14 +56,23 @@ public class MainPresenter extends MvpPresenter<MainView> {
         getViewState().persistCities(sortedCities);
     }
 
-    private void handleDataResponse(ResponseData responseData) {
+    private void handleFirstEventsDataResponse(ResponseData responseData) {
 
         getViewState().showProgress(false);
         getViewState().finishSwipeRefresh();
         getViewState().showData(responseData);
     }
 
-    private void handleDataResponseError(Throwable error) {
+    private void handleFirstEventsDataResponseError(Throwable error) {
         Log.d("myLog", "error");
     }
+
+//    public void loadNextPage(CompositeDisposable compositeDisposable, String nextPageLink) {
+//
+//        EventApiService apiService = RetrofitClient.getApiService();
+//        compositeDisposable.add(apiService.getJson(CITY_NAME, "2")
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
+//    }
 }

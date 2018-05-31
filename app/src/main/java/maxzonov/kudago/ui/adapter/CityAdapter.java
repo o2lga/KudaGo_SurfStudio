@@ -30,15 +30,14 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     @NonNull
     @Override
-    public CityViewHolder onCreateViewHolder(ViewGroup parent,
-                                             int viewType) {
+    public CityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.cities_item_view, parent, false);
         return new CityViewHolder(itemView, cityClickListener);
     }
 
     @Override
-    public void onBindViewHolder(CityViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull CityViewHolder holder, int position) {
         String city = cities.get(position);
         holder.tvCity.setText(city);
     }
@@ -57,7 +56,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         @BindView(R.id.iv_city_checked) ImageView imageView;
         private OnCityClickListener cityClickListener;
 
-        public CityViewHolder(View itemView, OnCityClickListener cityClickListener) {
+        CityViewHolder(View itemView, OnCityClickListener cityClickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             this.cityClickListener = cityClickListener;

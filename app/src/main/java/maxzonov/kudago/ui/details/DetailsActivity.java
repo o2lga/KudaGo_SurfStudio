@@ -34,6 +34,15 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
 
     @InjectPresenter DetailsPresenter detailsPresenter;
 
+    private static final String INTENT_IMAGES_URLS_ARRAY_ID = "images";
+    private static final String INTENT_PLACE_ID = "place";
+    private static final String INTENT_COORDINATES_ID = "coords";
+    private static final String INTENT_DESCRIPTION_ID = "descr";
+    private static final String INTENT_FULL_DESCRIPTION_ID = "full_descr";
+    private static final String INTENT_TITLE_ID = "title";
+    private static final String INTENT_DATE_ID = "date";
+    private static final String INTENT_PRICE_ID = "price";
+
     @BindView(R.id.details_title) TextView tvTitle;
     @BindView(R.id.details_subtitle) TextView tvSubTitle;
     @BindView(R.id.details_full_descr) TextView tvFullDescr;
@@ -47,8 +56,6 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
 
     @BindView(R.id.details_map_view) MapView mapView;
 
-    private GoogleMap googleMap;
-
     private Double latitude, longitude;
 
     private Unbinder unbinder;
@@ -61,16 +68,16 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
 
         ViewPager viewPager = findViewById(R.id.details_viewpager);
 
-        ArrayList<String> strings = new ArrayList<>(getIntent().getStringArrayListExtra("images"));
+        ArrayList<String> strings = new ArrayList<>(getIntent().getStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID));
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(this, strings);
         CircleIndicator indicator = findViewById(R.id.circle_indicator);
         viewPager.setAdapter(adapter);
         indicator.setViewPager(viewPager);
 
-        if (!getIntent().getStringExtra("place").equals("")) {
-            latitude = Double.parseDouble(getIntent().getStringArrayListExtra("coords").get(0));
-            longitude = Double.parseDouble(getIntent().getStringArrayListExtra("coords").get(1));
+        if (!getIntent().getStringExtra(INTENT_PLACE_ID).equals("")) {
+            latitude = Double.parseDouble(getIntent().getStringArrayListExtra(INTENT_COORDINATES_ID).get(0));
+            longitude = Double.parseDouble(getIntent().getStringArrayListExtra(INTENT_COORDINATES_ID).get(1));
             mapView.onCreate(null);
             mapView.onResume();
             mapView.getMapAsync(this);
@@ -78,19 +85,17 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
             mapView.setVisibility(View.GONE);
         }
 
-        tvTitle.setText(getIntent().getStringExtra("title"));
-        setTextWithHtml(tvSubTitle, getIntent().getStringExtra("descr"));
-        setTextWithHtml(tvFullDescr, getIntent().getStringExtra("full_descr"));
-        emptyInfoHandling(getIntent().getStringExtra("place"), layoutLocation, tvLocation);
-        emptyInfoHandling(getIntent().getStringExtra("date"), layoutDate, tvDate);
-        emptyInfoHandling(getIntent().getStringExtra("price"), layoutPrice, tvPrice);
+        tvTitle.setText(getIntent().getStringExtra(INTENT_TITLE_ID));
+        setTextWithHtml(tvSubTitle, getIntent().getStringExtra(INTENT_DESCRIPTION_ID));
+        setTextWithHtml(tvFullDescr, getIntent().getStringExtra(INTENT_FULL_DESCRIPTION_ID));
+        emptyInfoHandling(getIntent().getStringExtra(INTENT_PLACE_ID), layoutLocation, tvLocation);
+        emptyInfoHandling(getIntent().getStringExtra(INTENT_DATE_ID), layoutDate, tvDate);
+        emptyInfoHandling(getIntent().getStringExtra(INTENT_PRICE_ID), layoutPrice, tvPrice);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(this);
-
-        this.googleMap = googleMap;
 
         googleMap.addMarker(new MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))

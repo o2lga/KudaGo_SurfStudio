@@ -36,6 +36,20 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @InjectPresenter MainPresenter mainPresenter;
 
+    private static final String INTENT_IMAGES_URLS_ARRAY_ID = "images";
+    private static final String INTENT_PLACE_ID = "place";
+    private static final String INTENT_COORDINATES_ID = "coords";
+    private static final String INTENT_DESCRIPTION_ID = "descr";
+    private static final String INTENT_FULL_DESCRIPTION_ID = "full_descr";
+    private static final String INTENT_TITLE_ID = "title";
+    private static final String INTENT_DATE_ID = "date";
+    private static final String INTENT_PRICE_ID = "price";
+
+    private static final String INTENT_CITIES_ARRAY_ID = "cities";
+    private static final String INTENT_CITY_ID = "city";
+
+    private static final String CITY_MOSCOW_SLUG = "msk";
+
     private static final int CITY_REQUEST = 101;
 
     private CompositeDisposable compositeDisposable;
@@ -79,7 +93,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         eventAdapter = new EventAdapter(events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
         if (Utility.isNetworkAvailable(this)) {
-            mainPresenter.getData(compositeDisposable, "msk");
+            mainPresenter.getData(compositeDisposable, CITY_MOSCOW_SLUG);
         } else {
             progressBar.setVisibility(View.GONE);
             layoutContent.setVisibility(View.GONE);
@@ -101,17 +115,17 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             if (place != null) {
                 coords.add(place.getCoords().getLatitude());
                 coords.add(place.getCoords().getLongitude());
-                intent.putExtra("place", event.getPlace().getTitle());
-                intent.putStringArrayListExtra("coords", coords);
+                intent.putExtra(INTENT_PLACE_ID, event.getPlace().getTitle());
+                intent.putStringArrayListExtra(INTENT_COORDINATES_ID, coords);
             } else {
-                intent.putExtra("place", "");
+                intent.putExtra(INTENT_PLACE_ID, "");
             }
 
-            intent.putExtra("title", event.getTitle());
-            intent.putExtra("descr", event.getDescription());
-            intent.putExtra("full_descr", event.getFullDescription());
-            intent.putExtra("price", event.getPrice());
-            intent.putStringArrayListExtra("images", imageUrls);
+            intent.putExtra(INTENT_TITLE_ID, event.getTitle());
+            intent.putExtra(INTENT_DESCRIPTION_ID, event.getDescription());
+            intent.putExtra(INTENT_FULL_DESCRIPTION_ID, event.getFullDescription());
+            intent.putExtra(INTENT_PRICE_ID, event.getPrice());
+            intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
             startActivity(intent);
         });
 
@@ -127,7 +141,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             events.clear();
             showProgress(true);
 
-            int cityId = data.getIntExtra("city", 0);
+            int cityId = data.getIntExtra(INTENT_CITY_ID, 0);
             String cityName = cities.get(cityId).getName();
             String citySlug = cities.get(cityId).getSlug();
             currentCity = citySlug;
@@ -152,7 +166,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             stringsCity.add(itemCity.getName());
         }
         Intent intent = new Intent(MainActivity.this, CityActivity.class);
-        intent.putStringArrayListExtra("cities", stringsCity);
+        intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
         startActivityForResult(intent, CITY_REQUEST);
     }
 

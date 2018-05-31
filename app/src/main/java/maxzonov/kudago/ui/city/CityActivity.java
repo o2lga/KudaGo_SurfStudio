@@ -22,6 +22,9 @@ public class CityActivity extends AppCompatActivity {
     private static final int EXIT_RESULT = 100;
     private static final int CITY_RESULT = 101;
 
+    private static final String INTENT_CITIES_ARRAY_ID = "cities";
+    private static final String INTENT_CITY_ID = "city";
+
     @BindView(R.id.city_toolbar) Toolbar toolbar;
     @BindView(R.id.rv_city) RecyclerView rvCity;
 
@@ -39,11 +42,11 @@ public class CityActivity extends AppCompatActivity {
         unbinder = ButterKnife.bind(this);
         setSupportActionBar(toolbar);
 
-        cities = getIntent().getStringArrayListExtra("cities");
+        cities = getIntent().getStringArrayListExtra(INTENT_CITIES_ARRAY_ID);
 
         cityClickListener = ((view, position) -> {
             Intent intent = new Intent();
-            intent.putExtra("city", position);
+            intent.putExtra(INTENT_CITY_ID, position);
             setResult(CITY_RESULT, intent);
         });
 

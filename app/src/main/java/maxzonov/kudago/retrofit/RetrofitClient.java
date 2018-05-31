@@ -25,8 +25,8 @@ public class RetrofitClient {
                 .build();
     }
 
-    public static ApiService getApiService() {
-        return getRetrofitInstance().create(ApiService.class);
+    public static EventApiService getApiService() {
+        return getRetrofitInstance().create(EventApiService.class);
     }
 
     public static CityApiService getCityApiService() {
