@@ -4,6 +4,7 @@
     <!-- Main screen -->
     <string name="main_title">Куда сходить</string>
     <string name="main_tv_no_internet">Ошибка загрузки данных, проверьте соединение с интернетом</string>
+    <string name="main_snackbar_no_internet">Невозможно загрузить данные, проверьте соединение с интернетом.</string>
 
     <!-- Strings for layout -->
     <string name="item_title">Музыкальный фестиваль LiveFest Summer</string>

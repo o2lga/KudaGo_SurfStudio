@@ -2,6 +2,9 @@ package maxzonov.kudago.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -60,6 +63,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     private String currentCity = "msk";
     private ArrayList<City> cities = new ArrayList<>();
 
+    @BindView(R.id.coordinator_layout_main) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.main_rv) RecyclerView recyclerView;
     @BindView(R.id.main_pb) ProgressBar progressBar;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
@@ -92,12 +96,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         recyclerView.setLayoutManager(layoutManager);
         eventAdapter = new EventAdapter(events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
+
         if (Utility.isNetworkAvailable(this)) {
+            layoutNoInternet.setVisibility(View.GONE);
             mainPresenter.getData(compositeDisposable, CITY_MOSCOW_SLUG);
         } else {
-            progressBar.setVisibility(View.GONE);
-            layoutContent.setVisibility(View.GONE);
-            layoutNoInternet.setVisibility(View.VISIBLE);
+            handleInternetError();
         }
 
         eventClickListener = ((view, position) -> {
@@ -129,8 +133,28 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             startActivity(intent);
         });
 
-        swipeRefresh.setOnRefreshListener(() -> mainPresenter.getData(compositeDisposable, currentCity));
+        swipeRefresh.setOnRefreshListener(() -> {
+            if (Utility.isNetworkAvailable(this)) {
+                layoutNoInternet.setVisibility(View.GONE);
+                mainPresenter.getData(compositeDisposable, currentCity);
+            } else {
+                swipeRefresh.setRefreshing(false);
+                handleInternetError();
+            }
+        });
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+    }
+
+    private void handleInternetError() {
+        progressBar.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.GONE);
+        layoutNoInternet.setVisibility(View.VISIBLE);
+
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                getResources().getString(R.string.main_snackbar_no_internet),
+                Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+        snackbar.show();
     }
 
     @Override
