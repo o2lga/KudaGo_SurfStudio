@@ -31,7 +31,7 @@ ext {
     supportLibraryVersion = "27.1.0"
     retrofitVersion = "2.3.0"
     gsonVersion = "2.8.0"
-    picassoVersion = "2.71828"
+    glideVersion = "4.7.1"
     okHttpVersion = "3.7.0"
     rxJavaVersion = "2.1.1"
     rxAndroidVersion = "2.0.1"
@@ -70,8 +70,6 @@ dependencies {
     implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:$retrofitAdapterVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
 
-    implementation "com.squareup.picasso:picasso:$picassoVersion"
-
     implementation "com.nineoldandroids:library:2.4.0"
     implementation "com.daimajia.slider:library:1.1.5@aar"
 
@@ -81,4 +79,7 @@ dependencies {
     implementation "me.relex:circleindicator:$indicatorVersion"
 
     implementation "com.google.android.gms:play-services-maps:$gmsVersion"
+
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 }

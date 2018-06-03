@@ -1,10 +1,12 @@
 package maxzonov.kudago.ui.adapter;
 
+import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,11 +28,13 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
 import maxzonov.kudago.model.main.place.Place;
+import maxzonov.kudago.utils.GlideApp;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.Utility;
 
 public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private Context context;
     private List<Event> events;
     private OnEventClickListener eventClickListener;
 
@@ -40,7 +46,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private boolean isLoadingAdded = false;
 
-    public EventAdapter(List<Event> events, OnEventClickListener clickListener) {
+    public EventAdapter(Context context, List<Event> events, OnEventClickListener clickListener) {
+        this.context = context;
         this.events = events;
         this.eventClickListener = clickListener;
     }
@@ -89,7 +96,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (eventViewHolder.ivPhoto != null) {
-                    Picasso.get().load(imageUrl).into(eventViewHolder.ivPhoto);
+//                    Picasso.get().load(imageUrl).fit().centerCrop().into(eventViewHolder.ivPhoto);
+                    GlideApp.with(context).load(imageUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.RESOURCE).fitCenter().into(eventViewHolder.ivPhoto);
                 }
 
                 eventViewHolder.tvTitle.setText(event.getTitle());

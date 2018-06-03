@@ -94,7 +94,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
-        eventAdapter = new EventAdapter(events, eventClickListener);
+        eventAdapter = new EventAdapter(this, events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
 
         if (Utility.isNetworkAvailable(this)) {
@@ -199,7 +199,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         this.events = responseData.getEvents();
         this.responseData = responseData;
 //        eventAdapter.addToAdapterArray(responseData.getEvents());
-        eventAdapter = new EventAdapter(responseData.getEvents(), eventClickListener);
+        eventAdapter = new EventAdapter(this, responseData.getEvents(), eventClickListener);
         recyclerView.setAdapter(eventAdapter);
     }
 
