@@ -2,6 +2,7 @@ package maxzonov.kudago.retrofit;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -20,7 +21,7 @@ public class RetrofitClient {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
     }
@@ -31,5 +32,9 @@ public class RetrofitClient {
 
     public static CityApiService getCityApiService() {
         return getRetrofitInstance().create(CityApiService.class);
+    }
+
+    public static NextApiService getNextApiService() {
+        return getRetrofitInstance().create(NextApiService.class);
     }
 }

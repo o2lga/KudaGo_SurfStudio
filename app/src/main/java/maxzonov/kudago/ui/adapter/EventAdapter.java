@@ -76,14 +76,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+        Event event = events.get(position);
+        ArrayList<Date> dates = event.getDates();
         switch (getItemViewType(position)) {
 
             case DEFAULT_LOADING:
 
                 final EventViewHolder eventViewHolder = (EventViewHolder) holder;
-
-                Event event = events.get(position);
-                ArrayList<Date> dates = event.getDates();
 
                 formatAndShowDate(eventViewHolder, dates);
 
@@ -113,6 +112,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             case PAGINATION_LOADING:
                 final PaginationViewHolder paginationViewHolder = (PaginationViewHolder) holder;
+                Log.d("myLog", "size");
 
                 paginationViewHolder.progressBar.setVisibility(View.VISIBLE);
 
@@ -123,10 +123,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        if (events == null) {
-            return 0;
-        }
-        return events.size();
+
+        return events == null ? 0 : events.size();
     }
 
     @Override
@@ -135,6 +133,34 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return DEFAULT_LOADING;
         } else {
             return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
+        }
+    }
+
+    public void add(Event event) {
+        events.add(event);
+        notifyItemInserted(events.size() - 1);
+    }
+
+    public void addData(List<Event> additionalEvents) {
+        for (Event event : additionalEvents) {
+            add(event);
+        }
+    }
+
+    public void addLoadingItem() {
+        isLoadingAdded = true;
+        add(new Event());
+    }
+
+    public void removeLoadingItem() {
+        isLoadingAdded = false;
+
+        int position = events.size() - 1;
+        Event event = events.get(position);
+
+        if (event != null) {
+            events.remove(position);
+            notifyItemRemoved(position);
         }
     }
 

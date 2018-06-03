@@ -12,4 +12,5 @@ public interface MainView extends MvpView {
     void showProgress(boolean toShow);
     void finishSwipeRefresh();
     void persistCities(ArrayList<City> cities);
+    void showAdditionalData(ResponseData responseData);
 }

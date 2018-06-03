@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -64,6 +66,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     private ArrayList<City> cities = new ArrayList<>();
 
     @BindView(R.id.coordinator_layout_main) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.main_nested_scroll) NestedScrollView nestedScrollView;
     @BindView(R.id.main_rv) RecyclerView recyclerView;
     @BindView(R.id.main_pb) ProgressBar progressBar;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
@@ -76,6 +79,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     private LinearLayoutManager layoutManager;
     private EventAdapter eventAdapter;
+
+    private int pageCounter = 1;
+    private boolean isLoading = false;
 
     private Unbinder unbinder;
 
@@ -96,6 +102,19 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         recyclerView.setLayoutManager(layoutManager);
         eventAdapter = new EventAdapter(this, events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if(v.getChildAt(v.getChildCount() - 1) != null) {
+                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                        scrollY > oldScrollY) {
+                    if (!isLoading) {
+                        mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter + 1), currentCity);
+                        Log.d("myLog", "1234");
+                    }
+                    isLoading = true;
+                    pageCounter += 1;
+                }
+            }
+        });
 
         if (Utility.isNetworkAvailable(this)) {
             layoutNoInternet.setVisibility(View.GONE);
@@ -179,6 +198,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        compositeDisposable.dispose();
     }
 
     @OnClick(R.id.main_toolbar_city_layout)
@@ -222,5 +242,17 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     @Override
     public void persistCities(ArrayList<City> cities) {
         this.cities = cities;
+    }
+
+    @Override
+    public void showAdditionalData(ResponseData responseData) {
+        eventAdapter.removeLoadingItem();
+        isLoading = false;
+//        events.addAll(responseData.getEvents());
+//        eventAdapter = new EventAdapter(events, eventClickListener);
+//        recyclerView.setAdapter(eventAdapter);
+        eventAdapter.addData(responseData.getEvents());
+
+        eventAdapter.addLoadingItem();
     }
 }

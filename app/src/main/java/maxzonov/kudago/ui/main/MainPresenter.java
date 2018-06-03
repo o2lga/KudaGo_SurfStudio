@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 import maxzonov.kudago.model.City;
 import maxzonov.kudago.model.ResponseData;
 import maxzonov.kudago.retrofit.EventApiService;
 import maxzonov.kudago.retrofit.CityApiService;
+import maxzonov.kudago.retrofit.NextApiService;
 import maxzonov.kudago.retrofit.RetrofitClient;
 
 @InjectViewState
@@ -28,13 +28,11 @@ public class MainPresenter extends MvpPresenter<MainView> {
         CityApiService cityApiService = RetrofitClient.getCityApiService();
         compositeDisposable.add(cityApiService.getCityJson()
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe(this::handleCityDataResponse));
 
         EventApiService eventApiService = RetrofitClient.getApiService();
         compositeDisposable.add(eventApiService.getJson(citySlug, FIRST_PAGE_TO_LOAD)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
                 .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
     }
 
@@ -67,12 +65,15 @@ public class MainPresenter extends MvpPresenter<MainView> {
         Log.d("myLog", "error");
     }
 
-//    public void loadNextPage(CompositeDisposable compositeDisposable, String nextPageLink) {
-//
-//        EventApiService apiService = RetrofitClient.getApiService();
-//        compositeDisposable.add(apiService.getJson(CITY_NAME, "2")
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
-//    }
+    public void loadNextPage(CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
+
+        EventApiService apiService = RetrofitClient.getApiService();
+        compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleNextPageEventsDataResponse));
+    }
+
+    private void handleNextPageEventsDataResponse(ResponseData responseData) {
+        getViewState().showAdditionalData(responseData);
+    }
 }
