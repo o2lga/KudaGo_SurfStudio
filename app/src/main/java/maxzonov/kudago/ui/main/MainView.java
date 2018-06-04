@@ -9,7 +9,7 @@ import maxzonov.kudago.model.ResponseData;
 
 public interface MainView extends MvpView {
     void showData(ResponseData responseData);
-    void showProgress(boolean toShow);
+    void showLoadingProgress(boolean toShow);
     void finishSwipeRefresh();
     void persistCities(ArrayList<City> cities);
     void showAdditionalData(ResponseData responseData);

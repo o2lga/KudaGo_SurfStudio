@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
+
+import maxzonov.kudago.utils.GlideApp;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
@@ -35,8 +35,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(context);
-        Picasso.get().load(imageUrls.get(position))
-                .fit()
+        GlideApp.with(context).load(imageUrls.get(position))
                 .centerCrop()
                 .into(imageView);
         container.addView(imageView);

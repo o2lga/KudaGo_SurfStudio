@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +94,12 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (eventViewHolder.ivPhoto != null) {
-//                    Picasso.get().load(imageUrl).fit().centerCrop().into(eventViewHolder.ivPhoto);
-                    GlideApp.with(context).load(imageUrl).skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.RESOURCE).fitCenter().into(eventViewHolder.ivPhoto);
+                    GlideApp.with(context)
+                            .load(imageUrl)
+                            .skipMemoryCache(true)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                            .fitCenter()
+                            .into(eventViewHolder.ivPhoto);
                 }
 
                 eventViewHolder.tvTitle.setText(event.getTitle());
@@ -114,7 +115,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
             case PAGINATION_LOADING:
                 final PaginationViewHolder paginationViewHolder = (PaginationViewHolder) holder;
-                Log.d("myLog", "size");
 
                 paginationViewHolder.progressBar.setVisibility(View.VISIBLE);
 
@@ -210,11 +210,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         } else {
             holder.layoutLocation.setVisibility(View.GONE);
         }
-    }
-
-    public void addToAdapterArray(ArrayList<Event> resultEvents) {
-        events.addAll(resultEvents);
-        notifyItemInserted(events.size() - 1);
     }
 
     public class EventViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

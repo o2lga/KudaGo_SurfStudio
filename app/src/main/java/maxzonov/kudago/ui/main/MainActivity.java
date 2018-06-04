@@ -77,7 +77,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @BindView(R.id.main_toolbar_tv_city) TextView tvToolbarCity;
 
-    private LinearLayoutManager layoutManager;
     private EventAdapter eventAdapter;
 
     private int pageCounter = 1;
@@ -94,24 +93,24 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
         compositeDisposable = new CompositeDisposable();
 
-        showProgress(true);
+        showLoadingProgress(true);
         recyclerView.setNestedScrollingEnabled(false);
 
-        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         recyclerView.setLayoutManager(layoutManager);
         eventAdapter = new EventAdapter(this, events, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
             if(v.getChildAt(v.getChildCount() - 1) != null) {
                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                         scrollY > oldScrollY) {
                     if (!isLoading) {
-                        mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter + 1), currentCity);
-                        Log.d("myLog", "1234");
+                        mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
                     }
                     isLoading = true;
-                    pageCounter += 1;
                 }
             }
         });
@@ -128,10 +127,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
             Event event = events.get(position);
 
-            ArrayList<String> imageUrls = new ArrayList<>();
-            for (int i = 0; i < event.getImages().size(); i++) {
-                imageUrls.add(event.getImages().get(i).getImageUrl());
-            }
+            ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
 
             Place place = event.getPlace();
             ArrayList<String> coords = new ArrayList<>();
@@ -154,6 +150,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         });
 
         swipeRefresh.setOnRefreshListener(() -> {
+            pageCounter = 1;
             if (Utility.isNetworkAvailable(this)) {
                 layoutNoInternet.setVisibility(View.GONE);
                 mainPresenter.getData(compositeDisposable, currentCity);
@@ -165,25 +162,13 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
     }
 
-    private void handleInternetError() {
-        progressBar.setVisibility(View.GONE);
-        layoutContent.setVisibility(View.GONE);
-        layoutNoInternet.setVisibility(View.VISIBLE);
-
-        Snackbar snackbar = Snackbar.make(coordinatorLayout,
-                getResources().getString(R.string.main_snackbar_no_internet),
-                Snackbar.LENGTH_LONG);
-        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
-        snackbar.show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == CITY_REQUEST) {
             events.clear();
-            showProgress(true);
+            showLoadingProgress(true);
 
             int cityId = data.getIntExtra(INTENT_CITY_ID, 0);
             String cityName = cities.get(cityId).getName();
@@ -204,12 +189,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @OnClick(R.id.main_toolbar_city_layout)
     void onToolbarClicked() {
-        ArrayList<String> stringsCity = new ArrayList<>();
-        int citySize = cities.size();
-        for (int i = 0; i < citySize; i++) {
-            City itemCity = cities.get(i);
-            stringsCity.add(itemCity.getName());
-        }
+        ArrayList<String> stringsCity = new ArrayList<>(fillCitiesArray());
+
         Intent intent = new Intent(MainActivity.this, CityActivity.class);
         intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
         startActivityForResult(intent, CITY_REQUEST);
@@ -219,13 +200,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     public void showData(ResponseData responseData) {
         this.events = responseData.getEvents();
         this.responseData = responseData;
-//        eventAdapter.addToAdapterArray(responseData.getEvents());
         eventAdapter = new EventAdapter(this, responseData.getEvents(), eventClickListener);
         recyclerView.setAdapter(eventAdapter);
     }
 
     @Override
-    public void showProgress(boolean toShow) {
+    public void showLoadingProgress(boolean toShow) {
         if (toShow) {
             progressBar.setVisibility(View.VISIBLE);
             layoutContent.setVisibility(View.GONE);
@@ -249,11 +229,38 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
     public void showAdditionalData(ResponseData responseData) {
         eventAdapter.removeLoadingItem();
         isLoading = false;
-//        events.addAll(responseData.getEvents());
-//        eventAdapter = new EventAdapter(events, eventClickListener);
-//        recyclerView.setAdapter(eventAdapter);
         eventAdapter.addData(responseData.getEvents());
-
         eventAdapter.addLoadingItem();
+    }
+
+    private void handleInternetError() {
+        progressBar.setVisibility(View.GONE);
+        layoutContent.setVisibility(View.GONE);
+        layoutNoInternet.setVisibility(View.VISIBLE);
+
+        Snackbar snackbar = Snackbar.make(coordinatorLayout,
+                getResources().getString(R.string.main_snackbar_no_internet),
+                Snackbar.LENGTH_LONG);
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
+        snackbar.show();
+    }
+
+    private ArrayList<String> fillImagesArray(Event event) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        for (int i = 0; i < event.getImages().size(); i++) {
+            imageUrls.add(event.getImages().get(i).getImageUrl());
+        }
+        return imageUrls;
+    }
+
+    private ArrayList<String> fillCitiesArray() {
+        ArrayList<String> stringsCity = new ArrayList<>();
+        int citySize = cities.size();
+        for (int i = 0; i < citySize; i++) {
+            City itemCity = cities.get(i);
+            stringsCity.add(itemCity.getName());
+        }
+
+        return stringsCity;
     }
 }

@@ -1,7 +1,5 @@
 package maxzonov.kudago.ui.main;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -13,7 +11,6 @@ import maxzonov.kudago.model.City;
 import maxzonov.kudago.model.ResponseData;
 import maxzonov.kudago.retrofit.EventApiService;
 import maxzonov.kudago.retrofit.CityApiService;
-import maxzonov.kudago.retrofit.NextApiService;
 import maxzonov.kudago.retrofit.RetrofitClient;
 
 @InjectViewState
@@ -37,6 +34,34 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     private void handleCityDataResponse(ArrayList<City> cities) {
+        ArrayList<City> sortedCities = new ArrayList<>(sortCitiesArray(cities));
+        getViewState().persistCities(sortedCities);
+    }
+
+    private void handleFirstEventsDataResponse(ResponseData responseData) {
+
+        getViewState().showLoadingProgress(false);
+        getViewState().finishSwipeRefresh();
+        getViewState().showData(responseData);
+    }
+
+    private void handleFirstEventsDataResponseError(Throwable error) {
+
+    }
+
+    public void loadNextPage(CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
+
+        EventApiService apiService = RetrofitClient.getApiService();
+        compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleNextPageEventsDataResponse));
+    }
+
+    private void handleNextPageEventsDataResponse(ResponseData responseData) {
+        getViewState().showAdditionalData(responseData);
+    }
+
+    private ArrayList<City> sortCitiesArray(ArrayList<City> cities) {
         ArrayList<City> sortedCities = new ArrayList<>();
         for (City city : cities) {
             switch (city.getName()) {
@@ -51,29 +76,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
                     break;
             }
         }
-        getViewState().persistCities(sortedCities);
-    }
-
-    private void handleFirstEventsDataResponse(ResponseData responseData) {
-
-        getViewState().showProgress(false);
-        getViewState().finishSwipeRefresh();
-        getViewState().showData(responseData);
-    }
-
-    private void handleFirstEventsDataResponseError(Throwable error) {
-        Log.d("myLog", "error");
-    }
-
-    public void loadNextPage(CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
-
-        EventApiService apiService = RetrofitClient.getApiService();
-        compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleNextPageEventsDataResponse));
-    }
-
-    private void handleNextPageEventsDataResponse(ResponseData responseData) {
-        getViewState().showAdditionalData(responseData);
+        return sortedCities;
     }
 }
