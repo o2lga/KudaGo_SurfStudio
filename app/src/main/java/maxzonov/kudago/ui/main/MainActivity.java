@@ -123,7 +123,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             handleInternetError();
         }
 
-        eventClickListener = ((view, position) -> {
+        eventClickListener = ((view, position, date) -> {
             Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
 
             Event event = events.get(position);
@@ -148,6 +148,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
             intent.putExtra(INTENT_DESCRIPTION_ID, event.getDescription());
             intent.putExtra(INTENT_FULL_DESCRIPTION_ID, event.getFullDescription());
             intent.putExtra(INTENT_PRICE_ID, event.getPrice());
+            intent.putExtra(INTENT_DATE_ID, date);
             intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
             startActivity(intent);
         });

@@ -46,6 +46,8 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private boolean isLoadingAdded = false;
 
+    private String date;
+
     public EventAdapter(Context context, List<Event> events, OnEventClickListener clickListener) {
         this.context = context;
         this.events = events;
@@ -184,10 +186,14 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private void showInfoLayout(EventViewHolder holder, int infoId, String infoContent) {
         switch (infoId) {
             case ID_DATE:
-                if (!infoContent.equals(""))
+                if (!infoContent.equals("")) {
                     holder.tvInfoDate.setText(infoContent);
-                else
+                    date = infoContent;
+                }
+                else {
                     holder.layoutDate.setVisibility(View.GONE);
+                    date = "";
+                }
                 break;
             case ID_PRICE:
                 if (!infoContent.equals(""))
@@ -235,7 +241,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @Override
         public void onClick(View view) {
-            clickListener.onEventClick(view, getAdapterPosition());
+            clickListener.onEventClick(view, getAdapterPosition(), date);
         }
     }
 
