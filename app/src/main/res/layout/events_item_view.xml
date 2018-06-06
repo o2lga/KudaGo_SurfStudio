@@ -19,6 +19,7 @@
             android:id="@+id/main_item_iv"
             android:layout_width="match_parent"
             android:layout_height="@dimen/main_item_iv_height_160dp"
+            android:background="@drawable/ic_image_placeholder"
             android:scaleType="centerCrop"/>
 
         <TextView

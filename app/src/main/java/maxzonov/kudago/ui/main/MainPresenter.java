@@ -46,7 +46,8 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     private void handleFirstEventsDataResponseError(Throwable error) {
-
+        error.printStackTrace();
+        getViewState().handleInternetError();
     }
 
     public void loadNextPage(CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
@@ -54,11 +55,16 @@ public class MainPresenter extends MvpPresenter<MainView> {
         EventApiService apiService = RetrofitClient.getApiService();
         compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleNextPageEventsDataResponse));
+                .subscribe(this::handleNextPageEventsDataResponse, this::handleNextPageEventsDataResponseError));
     }
 
     private void handleNextPageEventsDataResponse(ResponseData responseData) {
         getViewState().showAdditionalData(responseData);
+    }
+
+    private void handleNextPageEventsDataResponseError(Throwable error) {
+        error.printStackTrace();
+        getViewState().showPaginationError();
     }
 
     private ArrayList<City> sortCitiesArray(ArrayList<City> cities) {

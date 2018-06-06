@@ -13,4 +13,6 @@ public interface MainView extends MvpView {
     void finishSwipeRefresh();
     void persistCities(ArrayList<City> cities);
     void showAdditionalData(ResponseData responseData);
+    void handleInternetError();
+    void showPaginationError();
 }

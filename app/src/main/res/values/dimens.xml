@@ -21,6 +21,7 @@
     <dimen name="main_item_iv_height_160dp">160dp</dimen>
     <dimen name="main_item_component_margin_8dp">8dp</dimen>
     <dimen name="main_item_component_margin_16dp">16dp</dimen>
+    <dimen name="main_item_error_height_56dp">56dp</dimen>
 
     <!-- Details screen -->
     <dimen name="details_iv_height_260dp">260dp</dimen>

@@ -5,8 +5,10 @@
     <string name="main_title">Куда сходить</string>
     <string name="main_tv_no_internet">Ошибка загрузки данных, проверьте соединение с интернетом</string>
     <string name="main_snackbar_no_internet">Невозможно загрузить данные, проверьте соединение с интернетом.</string>
+    <string name="main_item_error_btn">Повторить</string>
+    <string name="main_item_error_tv">Ошибка загрузки</string>
 
-    <!-- Strings for layout -->
+    <!-- Test strings for layout -->
     <string name="item_title">Музыкальный фестиваль LiveFest Summer</string>
     <string name="item_details">Первый фестиваль LiveFest на курорте «Роза Хутор» собрал перспективные музыкальные проекты России и произвёл фурор у публики. Летняя версия будет ещё жарче и динамичнее, охватит ещё больше жанров, откроет новые имена и порадует свежими треками от признанных звёзд.</string>
     <string name="item_info_location">ЦПКиО им. Горького</string>

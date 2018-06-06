@@ -9,6 +9,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,12 +22,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
 import maxzonov.kudago.model.main.place.Place;
 import maxzonov.kudago.utils.GlideApp;
 import maxzonov.kudago.utils.OnEventClickListener;
+import maxzonov.kudago.utils.OnRetryLoadingClickListener;
 import maxzonov.kudago.utils.Utility;
 
 public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,6 +45,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int ID_PRICE = 11;
 
     private boolean isLoadingAdded = false;
+    private boolean retryPageLoad = false;
+
+    private OnRetryLoadingClickListener retryLoadingClickListener;
 
     private String date;
 
@@ -49,6 +55,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.context = context;
         this.events = events;
         this.eventClickListener = clickListener;
+        retryLoadingClickListener = (OnRetryLoadingClickListener) context;
     }
 
     @NonNull
@@ -97,8 +104,10 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     GlideApp.with(context)
                             .load(imageUrl)
                             .skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                            .override(600, 280)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .fitCenter()
+                            .error(R.drawable.ic_image_placeholder)
                             .into(eventViewHolder.ivPhoto);
                 }
 
@@ -116,7 +125,15 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case PAGINATION_LOADING:
                 final PaginationViewHolder paginationViewHolder = (PaginationViewHolder) holder;
 
-                paginationViewHolder.progressBar.setVisibility(View.VISIBLE);
+                if (retryPageLoad) {
+                    paginationViewHolder.tvError.setVisibility(View.VISIBLE);
+                    paginationViewHolder.btnRetry.setVisibility(View.VISIBLE);
+                    paginationViewHolder.progressBar.setVisibility(View.GONE);
+                } else {
+                    paginationViewHolder.progressBar.setVisibility(View.VISIBLE);
+                    paginationViewHolder.tvError.setVisibility(View.GONE);
+                    paginationViewHolder.btnRetry.setVisibility(View.GONE);
+                }
 
                 break;
         }
@@ -164,6 +181,11 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             events.remove(position);
             notifyItemRemoved(position);
         }
+    }
+
+    public void showRetry(boolean showRetry) {
+        retryPageLoad = showRetry;
+        notifyItemChanged(events.size() - 1);
     }
 
     private void formatAndShowDate(EventViewHolder holder, ArrayList<Date> dates) {
@@ -244,10 +266,18 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @BindView(R.id.pagination_pb) ProgressBar progressBar;
         @BindView(R.id.pagination_layout) ConstraintLayout layout;
+        @BindView(R.id.tv_pagination_error) TextView tvError;
+        @BindView(R.id.btn_retry_pagination_error) Button btnRetry;
 
         public PaginationViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.btn_retry_pagination_error)
+        void onRetryClick() {
+            showRetry(false);
+            retryLoadingClickListener.retryPageLoad();
         }
     }
 }

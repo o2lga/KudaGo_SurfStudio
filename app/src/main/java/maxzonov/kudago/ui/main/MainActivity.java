@@ -10,7 +10,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -18,6 +17,8 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.MemoryCategory;
 
 import java.util.ArrayList;
 
@@ -35,9 +36,10 @@ import maxzonov.kudago.model.main.place.Place;
 import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
 import maxzonov.kudago.utils.OnEventClickListener;
+import maxzonov.kudago.utils.OnRetryLoadingClickListener;
 import maxzonov.kudago.utils.Utility;
 
-public class MainActivity extends MvpAppCompatActivity implements MainView {
+public class MainActivity extends MvpAppCompatActivity implements MainView, OnRetryLoadingClickListener {
 
     @InjectPresenter MainPresenter mainPresenter;
 
@@ -91,6 +93,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         setSupportActionBar(toolbar);
         unbinder = ButterKnife.bind(this);
 
+        Glide.get(this).setMemoryCategory(MemoryCategory.LOW);
+
         compositeDisposable = new CompositeDisposable();
 
         showLoadingProgress(true);
@@ -108,7 +112,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                         scrollY > oldScrollY) {
                     if (!isLoading) {
-                        mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
+
+                        if (Utility.isNetworkAvailable(this)) {
+                            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
+                        } else {
+                            showPaginationError();
+                        }
                     }
                     isLoading = true;
                 }
@@ -118,6 +127,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         if (Utility.isNetworkAvailable(this)) {
             layoutNoInternet.setVisibility(View.GONE);
             mainPresenter.getData(compositeDisposable, CITY_MOSCOW_SLUG);
+            pageCounter++;
         } else {
             handleInternetError();
         }
@@ -185,6 +195,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         super.onDestroy();
         unbinder.unbind();
         compositeDisposable.dispose();
+        Glide.get(this).clearMemory();
     }
 
     @OnClick(R.id.main_toolbar_city_layout)
@@ -202,6 +213,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         this.responseData = responseData;
         eventAdapter = new EventAdapter(this, responseData.getEvents(), eventClickListener);
         recyclerView.setAdapter(eventAdapter);
+        eventAdapter.addLoadingItem();
     }
 
     @Override
@@ -227,13 +239,16 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
 
     @Override
     public void showAdditionalData(ResponseData responseData) {
-        eventAdapter.removeLoadingItem();
+        if (pageCounter > 2) {
+            eventAdapter.removeLoadingItem();
+        }
         isLoading = false;
         eventAdapter.addData(responseData.getEvents());
         eventAdapter.addLoadingItem();
     }
 
-    private void handleInternetError() {
+    @Override
+    public void handleInternetError() {
         progressBar.setVisibility(View.GONE);
         layoutContent.setVisibility(View.GONE);
         layoutNoInternet.setVisibility(View.VISIBLE);
@@ -243,6 +258,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
                 Snackbar.LENGTH_LONG);
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(this, R.color.colorAccent));
         snackbar.show();
+    }
+
+    @Override
+    public void showPaginationError() {
+        eventAdapter.showRetry(true);
     }
 
     private ArrayList<String> fillImagesArray(Event event) {
@@ -262,5 +282,15 @@ public class MainActivity extends MvpAppCompatActivity implements MainView {
         }
 
         return stringsCity;
+    }
+
+    @Override
+    public void retryPageLoad() {
+        if (Utility.isNetworkAvailable(this)) {
+            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
+        } else {
+            showPaginationError();
+        }
+        isLoading = true;
     }
 }
