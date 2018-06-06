@@ -106,6 +106,9 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
                         .target(new LatLng(latitude, longitude))
                         .zoom(16)
                         .build()));
+
+        googleMap.getUiSettings().setScrollGesturesEnabled(false);
+        googleMap.getUiSettings().setZoomGesturesEnabled(false);
     }
 
     @Override
