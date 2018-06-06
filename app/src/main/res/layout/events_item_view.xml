@@ -5,6 +5,8 @@
     android:id="@+id/main_item_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/main_rv_margin_8dp"
+    android:layout_marginRight="@dimen/main_rv_margin_8dp"
     android:layout_marginBottom="@dimen/main_item_component_margin_16dp"
     app:cardCornerRadius="@dimen/main_item_card_radius_8dp">
 

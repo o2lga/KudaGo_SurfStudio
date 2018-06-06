@@ -70,9 +70,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/main_rv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/main_rv_margin_8dp"
-                    android:layout_marginRight="@dimen/main_rv_margin_8dp"/>
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
