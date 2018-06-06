@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
+import maxzonov.kudago.R;
 import maxzonov.kudago.utils.GlideApp;
 
 public class ViewPagerAdapter extends PagerAdapter {
@@ -37,6 +38,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         ImageView imageView = new ImageView(context);
         GlideApp.with(context).load(imageUrls.get(position))
                 .centerCrop()
+                .placeholder(R.drawable.ic_image_placeholder)
                 .into(imageView);
         container.addView(imageView);
         return imageView;

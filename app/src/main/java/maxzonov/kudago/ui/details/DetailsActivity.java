@@ -1,7 +1,13 @@
 package maxzonov.kudago.ui.details;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.View;
@@ -15,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,6 +49,9 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
     private static final String INTENT_TITLE_ID = "title";
     private static final String INTENT_DATE_ID = "date";
     private static final String INTENT_PRICE_ID = "price";
+
+    private static final int MAP_MARKER_HEIGHT = 39;
+    private static final int MAP_MARKER_WIDTH = 30;
 
     @BindView(R.id.details_title) TextView tvTitle;
     @BindView(R.id.details_subtitle) TextView tvSubTitle;
@@ -98,7 +108,7 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         MapsInitializer.initialize(this);
 
         googleMap.addMarker(new MarkerOptions()
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
+                .icon(bitmapFromVector(this, R.drawable.ic_map_marker))
                 .position(new LatLng(latitude, longitude)));
 
         googleMap.moveCamera(CameraUpdateFactory
@@ -145,5 +155,20 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         } else {
             textView.setText(Html.fromHtml(content).toString());
         }
+    }
+
+    private BitmapDescriptor bitmapFromVector(Context context, @DrawableRes int vectorDrawableResourceId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorDrawableResourceId);
+        vectorDrawable.setBounds(MAP_MARKER_HEIGHT, MAP_MARKER_WIDTH,
+                vectorDrawable.getIntrinsicWidth() + MAP_MARKER_HEIGHT,
+                vectorDrawable.getIntrinsicHeight() + MAP_MARKER_WIDTH);
+
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth() + MAP_MARKER_HEIGHT,
+                vectorDrawable.getIntrinsicHeight() + MAP_MARKER_WIDTH,
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 }
