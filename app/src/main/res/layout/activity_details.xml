@@ -181,10 +181,28 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/details_map_view"
+            <FrameLayout
+                android:id="@+id/details_layout_map"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/details_map_height_200dp"/>
+                android:layout_height="wrap_content">
+
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/details_map_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/details_map_height_200dp"/>
+
+                <Button
+                    android:id="@+id/details_btn_navigate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Проложить маршрут"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                    android:background="@drawable/details_navigate_btn_rounded"
+                    android:paddingLeft="@dimen/details_component_margin_8dp"
+                    android:paddingRight="@dimen/details_component_margin_8dp"
+                    android:textColor="@color/colorAccent"/>
+            </FrameLayout>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

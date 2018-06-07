@@ -1,9 +1,14 @@
 package maxzonov.kudago.ui.details;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -11,11 +16,15 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -26,6 +35,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
 
@@ -63,12 +74,15 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
     @BindView(R.id.details_layout_location) LinearLayout layoutLocation;
     @BindView(R.id.details_layout_date) LinearLayout layoutDate;
     @BindView(R.id.details_layout_price) LinearLayout layoutPrice;
+    @BindView(R.id.details_layout_map) FrameLayout layoutMap;
 
     @BindView(R.id.details_map_view) MapView mapView;
 
     private Double latitude, longitude;
 
     private Unbinder unbinder;
+
+    private FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +99,8 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         viewPager.setAdapter(adapter);
         indicator.setViewPager(viewPager);
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         if (!getIntent().getStringExtra(INTENT_PLACE_ID).equals("")) {
             latitude = Double.parseDouble(getIntent().getStringArrayListExtra(INTENT_COORDINATES_ID).get(0));
             longitude = Double.parseDouble(getIntent().getStringArrayListExtra(INTENT_COORDINATES_ID).get(1));
@@ -92,7 +108,7 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
             mapView.onResume();
             mapView.getMapAsync(this);
         } else {
-            mapView.setVisibility(View.GONE);
+            layoutMap.setVisibility(View.GONE);
         }
 
         tvTitle.setText(getIntent().getStringExtra(INTENT_TITLE_ID));
@@ -119,6 +135,30 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
 
         googleMap.getUiSettings().setScrollGesturesEnabled(false);
         googleMap.getUiSettings().setZoomGesturesEnabled(false);
+    }
+
+    @SuppressLint({"CheckResult", "MissingPermission"})
+    @OnClick(R.id.details_btn_navigate)
+    void onNavigateClick() {
+        RxPermissions permissions = new RxPermissions(this);
+        permissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
+                .subscribe(granted -> {
+                    if (granted) {
+                        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    ArrayList<String> coords = new ArrayList<>();
+                                    coords.add(String.valueOf(location.getLatitude()));
+                                    coords.add(String.valueOf(location.getLongitude()));
+                                    navigateToGoogleMaps(coords);
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(this, "Требуется разрешение на геолокацию", Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     @Override
@@ -170,5 +210,13 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         Canvas canvas = new Canvas(bitmap);
         vectorDrawable.draw(canvas);
         return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+    @Override
+    public void navigateToGoogleMaps(ArrayList<String> coords) {
+        Intent intent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://maps.google.com/maps?" + "saddr="+ coords.get(0) + "," + coords.get(1) + "&daddr=" + latitude + "," + longitude));
+        intent.setClassName("com.google.android.apps.maps","com.google.android.maps.MapsActivity");
+        startActivity(intent);
     }
 }

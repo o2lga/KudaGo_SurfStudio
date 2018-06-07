@@ -38,6 +38,7 @@ ext {
     retrofitAdapterVersion = "1.0.0"
     indicatorVersion = "1.2.2@aar"
     gmsVersion = "15.0.0"
+    rxPermissionVersion = "0.9.5@aar"
 }
 
 dependencies {
@@ -75,11 +76,15 @@ dependencies {
 
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "com.tbruyelle.rxpermissions2:rxpermissions:$rxPermissionVersion"
 
     implementation "me.relex:circleindicator:$indicatorVersion"
 
     implementation "com.google.android.gms:play-services-maps:$gmsVersion"
+    implementation "com.google.android.gms:play-services-location:$gmsVersion"
 
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+
+
 }
