@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,8 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,7 +33,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.util.ArrayList;
@@ -48,9 +45,7 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.ui.adapter.ViewPagerAdapter;
 import me.relex.circleindicator.CircleIndicator;
 
-public class DetailsActivity extends MvpAppCompatActivity implements DetailsView, OnMapReadyCallback {
-
-    @InjectPresenter DetailsPresenter detailsPresenter;
+public class DetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String INTENT_IMAGES_URLS_ARRAY_ID = "images";
     private static final String INTENT_PLACE_ID = "place";
@@ -144,15 +139,12 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         permissions.request(Manifest.permission.ACCESS_FINE_LOCATION)
                 .subscribe(granted -> {
                     if (granted) {
-                        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location != null) {
-                                    ArrayList<String> coords = new ArrayList<>();
-                                    coords.add(String.valueOf(location.getLatitude()));
-                                    coords.add(String.valueOf(location.getLongitude()));
-                                    navigateToGoogleMaps(coords);
-                                }
+                        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, location -> {
+                            if (location != null) {
+                                ArrayList<String> coords = new ArrayList<>();
+                                coords.add(String.valueOf(location.getLatitude()));
+                                coords.add(String.valueOf(location.getLongitude()));
+                                navigateToGoogleMaps(coords);
                             }
                         });
                     } else {
@@ -212,7 +204,6 @@ public class DetailsActivity extends MvpAppCompatActivity implements DetailsView
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    @Override
     public void navigateToGoogleMaps(ArrayList<String> coords) {
         Intent intent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse("http://maps.google.com/maps?" + "saddr="+ coords.get(0) + "," + coords.get(1) + "&daddr=" + latitude + "," + longitude));

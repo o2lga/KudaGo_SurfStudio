@@ -31,7 +31,6 @@ public class CityActivity extends AppCompatActivity {
     private Unbinder unbinder;
 
     private ArrayList<String> cities = new ArrayList<>();
-    private CityAdapter cityAdapter;
 
     private OnCityClickListener cityClickListener;
 
@@ -50,10 +49,7 @@ public class CityActivity extends AppCompatActivity {
             setResult(CITY_RESULT, intent);
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvCity.setLayoutManager(layoutManager);
-        cityAdapter = new CityAdapter(this, cities, cityClickListener);
-        rvCity.setAdapter(cityAdapter);
+        initRecyclerView();
     }
 
     @OnClick(R.id.iv_city_toolbar_exit)
@@ -66,5 +62,12 @@ public class CityActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    private void initRecyclerView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        rvCity.setLayoutManager(layoutManager);
+        CityAdapter cityAdapter = new CityAdapter(this, cities, cityClickListener);
+        rvCity.setAdapter(cityAdapter);
     }
 }

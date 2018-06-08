@@ -59,9 +59,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     private CompositeDisposable compositeDisposable;
     private OnEventClickListener eventClickListener;
     private ArrayList<Event> events = new ArrayList<>();
-    private ResponseData responseData = new ResponseData();
 
     private String currentCitySlug = "msk";
+    private String currentCityName = "Москва";
     private ArrayList<City> cities = new ArrayList<>();
 
     @BindView(R.id.coordinator_layout_main) CoordinatorLayout coordinatorLayout;
@@ -80,7 +80,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
     private int pageCounter = 1;
     private boolean isLoading = false;
-    private String currentCityName = "Москва";
 
     private Unbinder unbinder;
 
@@ -99,12 +98,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             tvToolbarCity.setText(savedInstanceState.getString("current_city_name"));
         }
 
-        recyclerView.setNestedScrollingEnabled(false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        initEventClickListener();
-        eventAdapter = new EventAdapter(this, eventClickListener);
-        recyclerView.setAdapter(eventAdapter);
+        initRecyclerView();
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -193,7 +187,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     @Override
     public void showData(ResponseData responseData) {
         this.events = responseData.getEvents();
-        this.responseData = responseData;
         eventAdapter.clear();
         eventAdapter.addData(responseData.getEvents());
         nestedScrollView.scrollTo(0, 0);
@@ -263,6 +256,15 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         } else {
             showPaginationError();
         }
+    }
+
+    private void initRecyclerView() {
+        recyclerView.setNestedScrollingEnabled(false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        initEventClickListener();
+        eventAdapter = new EventAdapter(this, eventClickListener);
+        recyclerView.setAdapter(eventAdapter);
     }
 
     private void initEventClickListener() {

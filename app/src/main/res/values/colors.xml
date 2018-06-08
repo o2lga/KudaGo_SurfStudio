@@ -8,6 +8,5 @@
 
     <color name="colorTvBlack">#262626</color>
     <color name="colorTvInfoGrey">#666666</color>
-    <color name="colorIvBackground">#CCCCCC</color>
     <color name="colorTransparent">#00FFFFFF</color>
 </resources>
