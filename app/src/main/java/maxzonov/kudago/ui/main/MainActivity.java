@@ -156,7 +156,12 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             currentCitySlug = citySlug;
 
             tvToolbarCity.setText(currentCityName);
-            mainPresenter.getData(compositeDisposable, citySlug);
+
+            if (Utility.isNetworkAvailable(this)) {
+                mainPresenter.getData(compositeDisposable, citySlug);
+            } else {
+                handleInternetError();
+            }
         }
     }
 
