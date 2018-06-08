@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.MemoryCategory;
 
 import java.util.ArrayList;
 
@@ -55,8 +54,6 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     private static final String INTENT_CITIES_ARRAY_ID = "cities";
     private static final String INTENT_CITY_ID = "city";
 
-    private static final String CITY_MOSCOW_SLUG = "msk";
-
     private static final int CITY_REQUEST = 101;
 
     private CompositeDisposable compositeDisposable;
@@ -64,7 +61,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     private ArrayList<Event> events = new ArrayList<>();
     private ResponseData responseData = new ResponseData();
 
-    private String currentCity = "msk";
+    private String currentCitySlug = "msk";
     private ArrayList<City> cities = new ArrayList<>();
 
     @BindView(R.id.coordinator_layout_main) CoordinatorLayout coordinatorLayout;
@@ -83,6 +80,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
     private int pageCounter = 1;
     private boolean isLoading = false;
+    private String currentCityName = "Москва";
 
     private Unbinder unbinder;
 
@@ -93,18 +91,21 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         setSupportActionBar(toolbar);
         unbinder = ButterKnife.bind(this);
 
-        Glide.get(this).setMemoryCategory(MemoryCategory.LOW);
-
         compositeDisposable = new CompositeDisposable();
 
-        showLoadingProgress(true);
+        if (savedInstanceState != null) {
+            showLoadingProgress(true);
+            currentCitySlug = savedInstanceState.getString("current_city_slug");
+            tvToolbarCity.setText(savedInstanceState.getString("current_city_name"));
+        }
+
         recyclerView.setNestedScrollingEnabled(false);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
         recyclerView.setLayoutManager(layoutManager);
-        eventAdapter = new EventAdapter(this, events, eventClickListener);
+        initEventClickListener();
+        eventAdapter = new EventAdapter(this, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
+
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
                 (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
@@ -114,56 +115,31 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
                     if (!isLoading) {
 
                         if (Utility.isNetworkAvailable(this)) {
-                            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
+                            isLoading = true;
+                            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
                         } else {
                             showPaginationError();
                         }
                     }
-                    isLoading = true;
                 }
             }
         });
 
         if (Utility.isNetworkAvailable(this)) {
+            showLoadingProgress(true);
             layoutNoInternet.setVisibility(View.GONE);
-            mainPresenter.getData(compositeDisposable, CITY_MOSCOW_SLUG);
+            mainPresenter.getData(compositeDisposable, currentCitySlug);
             pageCounter++;
         } else {
+            swipeRefresh.setRefreshing(false);
             handleInternetError();
         }
-
-        eventClickListener = ((view, position, date) -> {
-            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-
-            Event event = events.get(position);
-
-            ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
-
-            Place place = event.getPlace();
-            ArrayList<String> coords = new ArrayList<>();
-            if (place != null) {
-                coords.add(place.getCoords().getLatitude());
-                coords.add(place.getCoords().getLongitude());
-                intent.putExtra(INTENT_PLACE_ID, event.getPlace().getTitle());
-                intent.putStringArrayListExtra(INTENT_COORDINATES_ID, coords);
-            } else {
-                intent.putExtra(INTENT_PLACE_ID, "");
-            }
-
-            intent.putExtra(INTENT_TITLE_ID, event.getTitle());
-            intent.putExtra(INTENT_DESCRIPTION_ID, event.getDescription());
-            intent.putExtra(INTENT_FULL_DESCRIPTION_ID, event.getFullDescription());
-            intent.putExtra(INTENT_PRICE_ID, event.getPrice());
-            intent.putExtra(INTENT_DATE_ID, date);
-            intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
-            startActivity(intent);
-        });
 
         swipeRefresh.setOnRefreshListener(() -> {
             pageCounter = 1;
             if (Utility.isNetworkAvailable(this)) {
                 layoutNoInternet.setVisibility(View.GONE);
-                mainPresenter.getData(compositeDisposable, currentCity);
+                mainPresenter.getData(compositeDisposable, currentCitySlug);
             } else {
                 swipeRefresh.setRefreshing(false);
                 handleInternetError();
@@ -181,13 +157,20 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             showLoadingProgress(true);
 
             int cityId = data.getIntExtra(INTENT_CITY_ID, 0);
-            String cityName = cities.get(cityId).getName();
+            currentCityName = cities.get(cityId).getName();
             String citySlug = cities.get(cityId).getSlug();
-            currentCity = citySlug;
+            currentCitySlug = citySlug;
 
-            tvToolbarCity.setText(cityName);
+            tvToolbarCity.setText(currentCityName);
             mainPresenter.getData(compositeDisposable, citySlug);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("current_city_slug", currentCitySlug);
+        outState.putString("current_city_name", currentCityName);
     }
 
     @Override
@@ -211,8 +194,9 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     public void showData(ResponseData responseData) {
         this.events = responseData.getEvents();
         this.responseData = responseData;
-        eventAdapter = new EventAdapter(this, responseData.getEvents(), eventClickListener);
-        recyclerView.setAdapter(eventAdapter);
+        eventAdapter.clear();
+        eventAdapter.addData(responseData.getEvents());
+        nestedScrollView.scrollTo(0, 0);
         eventAdapter.addLoadingItem();
     }
 
@@ -239,9 +223,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
     @Override
     public void showAdditionalData(ResponseData responseData) {
-        if (pageCounter > 2) {
-            eventAdapter.removeLoadingItem();
-        }
+        events.addAll(responseData.getEvents());
+        eventAdapter.removeLoadingItem();
         isLoading = false;
         eventAdapter.addData(responseData.getEvents());
         eventAdapter.addLoadingItem();
@@ -273,6 +256,44 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         return imageUrls;
     }
 
+    @Override
+    public void retryPageLoad() {
+        if (Utility.isNetworkAvailable(this)) {
+            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
+        } else {
+            showPaginationError();
+        }
+    }
+
+    private void initEventClickListener() {
+        eventClickListener = ((view, position, date) -> {
+            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+
+            Event event = events.get(position);
+
+            ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
+
+            Place place = event.getPlace();
+            ArrayList<String> coords = new ArrayList<>();
+            if (place != null) {
+                coords.add(place.getCoords().getLatitude());
+                coords.add(place.getCoords().getLongitude());
+                intent.putExtra(INTENT_PLACE_ID, event.getPlace().getTitle());
+                intent.putStringArrayListExtra(INTENT_COORDINATES_ID, coords);
+            } else {
+                intent.putExtra(INTENT_PLACE_ID, "");
+            }
+
+            intent.putExtra(INTENT_TITLE_ID, event.getTitle());
+            intent.putExtra(INTENT_DESCRIPTION_ID, event.getDescription());
+            intent.putExtra(INTENT_FULL_DESCRIPTION_ID, event.getFullDescription());
+            intent.putExtra(INTENT_PRICE_ID, event.getPrice());
+            intent.putExtra(INTENT_DATE_ID, date);
+            intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
+            startActivity(intent);
+        });
+    }
+
     private ArrayList<String> fillCitiesArray() {
         ArrayList<String> stringsCity = new ArrayList<>();
         int citySize = cities.size();
@@ -282,15 +303,5 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         }
 
         return stringsCity;
-    }
-
-    @Override
-    public void retryPageLoad() {
-        if (Utility.isNetworkAvailable(this)) {
-            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCity);
-        } else {
-            showPaginationError();
-        }
-        isLoading = true;
     }
 }

@@ -51,9 +51,9 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private String date;
 
-    public EventAdapter(Context context, List<Event> events, OnEventClickListener clickListener) {
+    public EventAdapter(Context context, OnEventClickListener clickListener) {
         this.context = context;
-        this.events = events;
+        events = new ArrayList<>();
         this.eventClickListener = clickListener;
         retryLoadingClickListener = (OnRetryLoadingClickListener) context;
     }
@@ -61,7 +61,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         RecyclerView.ViewHolder viewHolder = null;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
@@ -83,13 +82,13 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         Event event = events.get(position);
-        ArrayList<Date> dates = event.getDates();
         switch (getItemViewType(position)) {
 
             case DEFAULT_LOADING:
 
                 final EventViewHolder eventViewHolder = (EventViewHolder) holder;
 
+                ArrayList<Date> dates = event.getDates();
                 formatAndShowDate(eventViewHolder, dates);
 
                 // Get first image for item
@@ -120,6 +119,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 showInfoLayout(eventViewHolder, ID_PRICE, event.getPrice());
                 showLocation(eventViewHolder, event.getPlace());
+
                 break;
 
             case PAGINATION_LOADING:
@@ -134,7 +134,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     paginationViewHolder.tvError.setVisibility(View.GONE);
                     paginationViewHolder.btnRetry.setVisibility(View.GONE);
                 }
-
                 break;
         }
 
@@ -148,11 +147,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0) {
-            return DEFAULT_LOADING;
-        } else {
-            return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
-        }
+        return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
     }
 
     public void add(Event event) {
@@ -163,6 +158,21 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public void addData(List<Event> additionalEvents) {
         for (Event event : additionalEvents) {
             add(event);
+        }
+    }
+
+    public void remove(Event event) {
+        int position = events.indexOf(event);
+        if (position > -1) {
+            events.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    public void clear() {
+        isLoadingAdded = false;
+        while (getItemCount() > 0) {
+            remove(events.get(0));
         }
     }
 

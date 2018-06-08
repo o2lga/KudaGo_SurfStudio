@@ -39,7 +39,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     private void handleFirstEventsDataResponse(ResponseData responseData) {
-
         getViewState().showLoadingProgress(false);
         getViewState().finishSwipeRefresh();
         getViewState().showData(responseData);
