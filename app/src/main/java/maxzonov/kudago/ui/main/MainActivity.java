@@ -36,6 +36,7 @@ import maxzonov.kudago.ui.adapter.EventAdapter;
 import maxzonov.kudago.ui.details.DetailsActivity;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.OnRetryLoadingClickListener;
+import maxzonov.kudago.utils.SharedPreferenceManager;
 import maxzonov.kudago.utils.Utility;
 
 public class MainActivity extends MvpAppCompatActivity implements MainView, OnRetryLoadingClickListener {
@@ -78,6 +79,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
     private EventAdapter eventAdapter;
 
+    private SharedPreferenceManager prefsManager;
+
     private int pageCounter = 1;
     private boolean isLoading = false;
 
@@ -92,32 +95,14 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
         compositeDisposable = new CompositeDisposable();
 
-        if (savedInstanceState != null) {
-            showLoadingProgress(true);
-            currentCitySlug = savedInstanceState.getString("current_city_slug");
-            tvToolbarCity.setText(savedInstanceState.getString("current_city_name"));
-        }
-
+        prefsManager = new SharedPreferenceManager(this);
+        currentCitySlug = prefsManager.readFromPrefs("current_city_slug");
+        currentCityName = prefsManager.readFromPrefs("current_city_name");
+        tvToolbarCity.setText(currentCityName);
+        
         initRecyclerView();
 
-        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
-                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
-            if(v.getChildAt(v.getChildCount() - 1) != null) {
-                if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
-                        scrollY > oldScrollY) {
-                    if (!isLoading) {
-
-                        if (Utility.isNetworkAvailable(this)) {
-                            isLoading = true;
-                            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
-                        } else {
-                            showPaginationError();
-                        }
-                    }
-                }
-            }
-        });
+        initScrollViewListener();
 
         if (Utility.isNetworkAvailable(this)) {
             showLoadingProgress(true);
@@ -129,17 +114,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             handleInternetError();
         }
 
-        swipeRefresh.setOnRefreshListener(() -> {
-            pageCounter = 1;
-            if (Utility.isNetworkAvailable(this)) {
-                layoutNoInternet.setVisibility(View.GONE);
-                mainPresenter.getData(compositeDisposable, currentCitySlug);
-            } else {
-                swipeRefresh.setRefreshing(false);
-                handleInternetError();
-            }
-        });
-        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
+        initSwipeToRefresh();
     }
 
     @Override
@@ -154,6 +129,8 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             currentCityName = cities.get(cityId).getName();
             String citySlug = cities.get(cityId).getSlug();
             currentCitySlug = citySlug;
+            prefsManager.writeToPrefs("current_city_slug", citySlug);
+            prefsManager.writeToPrefs("current_city_name", currentCityName);
 
             tvToolbarCity.setText(currentCityName);
 
@@ -299,6 +276,41 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
             startActivity(intent);
         });
+    }
+
+    private void initScrollViewListener() {
+        nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
+                (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+
+                    if(v.getChildAt(v.getChildCount() - 1) != null) {
+                        if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
+                                scrollY > oldScrollY) {
+                            if (!isLoading) {
+
+                                if (Utility.isNetworkAvailable(this)) {
+                                    isLoading = true;
+                                    mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
+                                } else {
+                                    showPaginationError();
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void initSwipeToRefresh() {
+        swipeRefresh.setOnRefreshListener(() -> {
+            pageCounter = 1;
+            if (Utility.isNetworkAvailable(this)) {
+                layoutNoInternet.setVisibility(View.GONE);
+                mainPresenter.getData(compositeDisposable, currentCitySlug);
+            } else {
+                swipeRefresh.setRefreshing(false);
+                handleInternetError();
+            }
+        });
+        swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
     }
 
     private ArrayList<String> fillCitiesArray() {
