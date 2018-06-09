@@ -99,7 +99,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         currentCitySlug = prefsManager.readFromPrefs("current_city_slug");
         currentCityName = prefsManager.readFromPrefs("current_city_name");
         tvToolbarCity.setText(currentCityName);
-        
+
         initRecyclerView();
 
         initScrollViewListener();
@@ -161,9 +161,11 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     void onToolbarClicked() {
         ArrayList<String> stringsCity = new ArrayList<>(fillCitiesArray());
 
-        Intent intent = new Intent(MainActivity.this, CityActivity.class);
-        intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
-        startActivityForResult(intent, CITY_REQUEST);
+        if (Utility.isNetworkAvailable(this)) {
+            Intent intent = new Intent(MainActivity.this, CityActivity.class);
+            intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
+            startActivityForResult(intent, CITY_REQUEST);
+        }
     }
 
     @Override
