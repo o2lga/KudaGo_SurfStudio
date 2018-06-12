@@ -1,6 +1,5 @@
 package maxzonov.kudago.ui.adapter;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,10 +19,8 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
 
     private List<String> cities;
     private OnCityClickListener cityClickListener;
-    private Activity activity;
 
-    public CityAdapter(Activity activity, List<String> items, OnCityClickListener cityClickListener) {
-        this.activity = activity;
+    public CityAdapter(List<String> items, OnCityClickListener cityClickListener) {
         this.cities = items;
         this.cityClickListener = cityClickListener;
     }
@@ -67,7 +64,6 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.CityViewHolder
         public void onClick(View view) {
             imageView.setVisibility(View.VISIBLE);
             cityClickListener.onCityClick(view, getAdapterPosition());
-            activity.finish();
         }
     }
 }

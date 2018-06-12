@@ -109,9 +109,9 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
         tvTitle.setText(getIntent().getStringExtra(INTENT_TITLE_ID));
         setTextWithHtml(tvSubTitle, getIntent().getStringExtra(INTENT_DESCRIPTION_ID));
         setTextWithHtml(tvFullDescr, getIntent().getStringExtra(INTENT_FULL_DESCRIPTION_ID));
-        emptyInfoHandling(getIntent().getStringExtra(INTENT_PLACE_ID), layoutLocation, tvLocation);
-        emptyInfoHandling(getIntent().getStringExtra(INTENT_DATE_ID), layoutDate, tvDate);
-        emptyInfoHandling(getIntent().getStringExtra(INTENT_PRICE_ID), layoutPrice, tvPrice);
+        handleEmptyInfo(getIntent().getStringExtra(INTENT_PLACE_ID), layoutLocation, tvLocation);
+        handleEmptyInfo(getIntent().getStringExtra(INTENT_DATE_ID), layoutDate, tvDate);
+        handleEmptyInfo(getIntent().getStringExtra(INTENT_PRICE_ID), layoutPrice, tvPrice);
     }
 
     @Override
@@ -164,7 +164,7 @@ public class DetailsActivity extends AppCompatActivity implements OnMapReadyCall
         onBackPressed();
     }
 
-    private void emptyInfoHandling(String info, LinearLayout layout, TextView textView) {
+    private void handleEmptyInfo(String info, LinearLayout layout, TextView textView) {
         if (info == null || info.equals(""))
             layout.setVisibility(View.GONE);
         else

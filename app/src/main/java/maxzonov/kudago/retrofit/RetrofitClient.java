@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://kudago.com/public-api/";
+    private static final String BASE_URL = "https://kudago.com/public-api/v1.4/";
 
     private static Retrofit getRetrofitInstance() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
@@ -32,9 +32,5 @@ public class RetrofitClient {
 
     public static CityApiService getCityApiService() {
         return getRetrofitInstance().create(CityApiService.class);
-    }
-
-    public static NextApiService getNextApiService() {
-        return getRetrofitInstance().create(NextApiService.class);
     }
 }

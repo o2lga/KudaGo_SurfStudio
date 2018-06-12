@@ -8,6 +8,6 @@ import retrofit2.http.GET;
 
 public interface CityApiService {
 
-    @GET("v1.4//locations/")
+    @GET("locations/")
     Observable<ArrayList<City>> getCityJson();
 }

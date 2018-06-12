@@ -47,6 +47,7 @@ public class CityActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra(INTENT_CITY_ID, position);
             setResult(CITY_RESULT, intent);
+            finish();
         });
 
         initRecyclerView();
@@ -67,7 +68,7 @@ public class CityActivity extends AppCompatActivity {
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvCity.setLayoutManager(layoutManager);
-        CityAdapter cityAdapter = new CityAdapter(this, cities, cityClickListener);
+        CityAdapter cityAdapter = new CityAdapter(cities, cityClickListener);
         rvCity.setAdapter(cityAdapter);
     }
 }

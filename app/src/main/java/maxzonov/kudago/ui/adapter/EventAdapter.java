@@ -27,14 +27,12 @@ import maxzonov.kudago.R;
 import maxzonov.kudago.model.main.Event;
 import maxzonov.kudago.model.main.date.Date;
 import maxzonov.kudago.model.main.place.Place;
-import maxzonov.kudago.utils.GlideApp;
 import maxzonov.kudago.utils.OnEventClickListener;
 import maxzonov.kudago.utils.OnRetryLoadingClickListener;
 import maxzonov.kudago.utils.Utility;
 
 public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Context context;
     private List<Event> events;
     private OnEventClickListener eventClickListener;
 
@@ -52,7 +50,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private String date;
 
     public EventAdapter(Context context, OnEventClickListener clickListener) {
-        this.context = context;
         events = new ArrayList<>();
         this.eventClickListener = clickListener;
         retryLoadingClickListener = (OnRetryLoadingClickListener) context;
@@ -100,7 +97,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (eventViewHolder.ivPhoto != null) {
-                    GlideApp.with(context)
+                    GlideApp.with(eventViewHolder.ivPhoto.getContext())
                             .load(imageUrl)
                             .skipMemoryCache(true)
                             .override(600, 280)

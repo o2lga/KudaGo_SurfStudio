@@ -307,6 +307,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             if (Utility.isNetworkAvailable(this)) {
                 layoutNoInternet.setVisibility(View.GONE);
                 mainPresenter.getData(compositeDisposable, currentCitySlug);
+                pageCounter++;
             } else {
                 swipeRefresh.setRefreshing(false);
                 handleInternetError();
