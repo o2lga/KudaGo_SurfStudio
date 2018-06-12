@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import maxzonov.kudago.model.City;
 import maxzonov.kudago.model.ResponseData;
 
-public interface MainView extends MvpView {
+public interface EventsView extends MvpView {
     void showData(ResponseData responseData);
     void showLoadingProgress(boolean toShow);
     void finishSwipeRefresh();

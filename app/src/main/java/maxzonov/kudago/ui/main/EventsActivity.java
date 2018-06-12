@@ -39,9 +39,10 @@ import maxzonov.kudago.utils.OnRetryLoadingClickListener;
 import maxzonov.kudago.utils.SharedPreferenceManager;
 import maxzonov.kudago.utils.Utility;
 
-public class MainActivity extends MvpAppCompatActivity implements MainView, OnRetryLoadingClickListener {
+public class EventsActivity extends MvpAppCompatActivity implements EventsView, OnRetryLoadingClickListener {
 
-    @InjectPresenter MainPresenter mainPresenter;
+    @InjectPresenter
+    EventsPresenter eventsPresenter;
 
     private static final String INTENT_IMAGES_URLS_ARRAY_ID = "images";
     private static final String INTENT_PLACE_ID = "place";
@@ -89,7 +90,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_events);
         setSupportActionBar(toolbar);
         unbinder = ButterKnife.bind(this);
 
@@ -107,7 +108,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         if (Utility.isNetworkAvailable(this)) {
             showLoadingProgress(true);
             layoutNoInternet.setVisibility(View.GONE);
-            mainPresenter.getData(compositeDisposable, currentCitySlug);
+            eventsPresenter.getData(compositeDisposable, currentCitySlug);
             pageCounter++;
         } else {
             swipeRefresh.setRefreshing(false);
@@ -135,7 +136,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             tvToolbarCity.setText(currentCityName);
 
             if (Utility.isNetworkAvailable(this)) {
-                mainPresenter.getData(compositeDisposable, citySlug);
+                eventsPresenter.getData(compositeDisposable, citySlug);
             } else {
                 handleInternetError();
             }
@@ -162,7 +163,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
         ArrayList<String> stringsCity = new ArrayList<>(fillCitiesArray());
 
         if (Utility.isNetworkAvailable(this)) {
-            Intent intent = new Intent(MainActivity.this, CityActivity.class);
+            Intent intent = new Intent(EventsActivity.this, CityActivity.class);
             intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
             startActivityForResult(intent, CITY_REQUEST);
         }
@@ -236,7 +237,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
     @Override
     public void retryPageLoad() {
         if (Utility.isNetworkAvailable(this)) {
-            mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
+            eventsPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
         } else {
             showPaginationError();
         }
@@ -253,7 +254,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
     private void initEventClickListener() {
         eventClickListener = ((view, position, date) -> {
-            Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+            Intent intent = new Intent(EventsActivity.this, DetailsActivity.class);
 
             Event event = events.get(position);
 
@@ -291,7 +292,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
 
                                 if (Utility.isNetworkAvailable(this)) {
                                     isLoading = true;
-                                    mainPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
+                                    eventsPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
                                 } else {
                                     showPaginationError();
                                 }
@@ -306,7 +307,7 @@ public class MainActivity extends MvpAppCompatActivity implements MainView, OnRe
             pageCounter = 1;
             if (Utility.isNetworkAvailable(this)) {
                 layoutNoInternet.setVisibility(View.GONE);
-                mainPresenter.getData(compositeDisposable, currentCitySlug);
+                eventsPresenter.getData(compositeDisposable, currentCitySlug);
                 pageCounter++;
             } else {
                 swipeRefresh.setRefreshing(false);

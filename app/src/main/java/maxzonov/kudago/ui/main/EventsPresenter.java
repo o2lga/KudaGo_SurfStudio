@@ -14,7 +14,7 @@ import maxzonov.kudago.retrofit.CityApiService;
 import maxzonov.kudago.retrofit.RetrofitClient;
 
 @InjectViewState
-public class MainPresenter extends MvpPresenter<MainView> {
+public class EventsPresenter extends MvpPresenter<EventsView> {
 
     private static final String FIRST_PAGE_TO_LOAD = "1";
     private static final String CITY_MOSCOW_NAME = "Москва";

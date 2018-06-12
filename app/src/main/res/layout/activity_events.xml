@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
-    tools:context=".ui.main.MainActivity">
+    tools:context=".ui.main.EventsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -29,7 +29,7 @@
                 app:popupTheme="@style/Base.ThemeOverlay.AppCompat.Light"
                 app:layout_collapseMode="pin">
 
-                <include layout="@layout/toolbar_main"/>
+                <include layout="@layout/toolbar_events"/>
 
             </android.support.v7.widget.Toolbar>
 
