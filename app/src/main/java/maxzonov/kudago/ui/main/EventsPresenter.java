@@ -1,5 +1,7 @@
 package maxzonov.kudago.ui.main;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
@@ -45,7 +47,7 @@ public class EventsPresenter extends MvpPresenter<EventsView> {
     }
 
     private void handleFirstEventsDataResponseError(Throwable error) {
-        error.printStackTrace();
+        Log.e("myLog", error.getMessage());
         getViewState().handleInternetError();
     }
 
@@ -62,7 +64,7 @@ public class EventsPresenter extends MvpPresenter<EventsView> {
     }
 
     private void handleNextPageEventsDataResponseError(Throwable error) {
-        error.printStackTrace();
+        Log.e("myLog", error.getMessage());
         getViewState().showPaginationError();
     }
 

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,7 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 try {
                     imageUrl = event.getImages().get(0).getImageUrl();
                 } catch (NullPointerException e) {
-                    e.printStackTrace();
+                    Log.e("myLog", e.getMessage());
                 }
 
                 if (eventViewHolder.ivPhoto != null) {
