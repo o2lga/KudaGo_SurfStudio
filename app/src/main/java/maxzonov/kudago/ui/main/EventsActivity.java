@@ -41,8 +41,7 @@ import maxzonov.kudago.utils.Utility;
 
 public class EventsActivity extends MvpAppCompatActivity implements EventsView, OnRetryLoadingClickListener {
 
-    @InjectPresenter
-    EventsPresenter eventsPresenter;
+    @InjectPresenter EventsPresenter eventsPresenter;
 
     private static final String INTENT_IMAGES_URLS_ARRAY_ID = "images";
     private static final String INTENT_PLACE_ID = "place";
@@ -226,14 +225,6 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         eventAdapter.showRetry(true);
     }
 
-    private ArrayList<String> fillImagesArray(Event event) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        for (int i = 0; i < event.getImages().size(); i++) {
-            imageUrls.add(event.getImages().get(i).getImageUrl());
-        }
-        return imageUrls;
-    }
-
     @Override
     public void retryPageLoad() {
         if (Utility.isNetworkAvailable(this)) {
@@ -254,31 +245,36 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
 
     private void initEventClickListener() {
         eventClickListener = ((view, position, date) -> {
-            Intent intent = new Intent(EventsActivity.this, DetailsActivity.class);
-
             Event event = events.get(position);
-
-            ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
-
             Place place = event.getPlace();
-            ArrayList<String> coords = new ArrayList<>();
-            if (place != null) {
-                coords.add(place.getCoords().getLatitude());
-                coords.add(place.getCoords().getLongitude());
-                intent.putExtra(INTENT_PLACE_ID, event.getPlace().getTitle());
-                intent.putStringArrayListExtra(INTENT_COORDINATES_ID, coords);
-            } else {
-                intent.putExtra(INTENT_PLACE_ID, "");
-            }
 
+            Intent intent = new Intent(EventsActivity.this, DetailsActivity.class);
+            constructPlaceIntent(intent, place);
+            constructImageIntent(intent, event);
             intent.putExtra(INTENT_TITLE_ID, event.getTitle());
             intent.putExtra(INTENT_DESCRIPTION_ID, event.getDescription());
             intent.putExtra(INTENT_FULL_DESCRIPTION_ID, event.getFullDescription());
             intent.putExtra(INTENT_PRICE_ID, event.getPrice());
             intent.putExtra(INTENT_DATE_ID, date);
-            intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
             startActivity(intent);
         });
+    }
+
+    private void constructPlaceIntent(Intent intent, Place place) {
+        if (place != null) {
+            ArrayList<String> coords = new ArrayList<>();
+            coords.add(place.getCoords().getLatitude());
+            coords.add(place.getCoords().getLongitude());
+            intent.putExtra(INTENT_PLACE_ID, place.getTitle());
+            intent.putStringArrayListExtra(INTENT_COORDINATES_ID, coords);
+        } else {
+            intent.putExtra(INTENT_PLACE_ID, "");
+        }
+    }
+
+    private void constructImageIntent(Intent intent, Event event) {
+        ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
+        intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
     }
 
     private void initScrollViewListener() {
@@ -289,7 +285,6 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
                         if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                                 scrollY > oldScrollY) {
                             if (!isLoading) {
-
                                 if (Utility.isNetworkAvailable(this)) {
                                     isLoading = true;
                                     eventsPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
@@ -317,6 +312,14 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
     }
 
+    private ArrayList<String> fillImagesArray(Event event) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        for (int i = 0; i < event.getImages().size(); i++) {
+            imageUrls.add(event.getImages().get(i).getImageUrl());
+        }
+        return imageUrls;
+    }
+
     private ArrayList<String> fillCitiesArray() {
         ArrayList<String> stringsCity = new ArrayList<>();
         int citySize = cities.size();
@@ -324,7 +327,6 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
             City itemCity = cities.get(i);
             stringsCity.add(itemCity.getName());
         }
-
         return stringsCity;
     }
 }

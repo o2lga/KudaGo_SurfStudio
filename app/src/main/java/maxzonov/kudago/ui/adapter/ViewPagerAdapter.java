@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import maxzonov.kudago.R;
+import maxzonov.kudago.utils.GlideApp;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
