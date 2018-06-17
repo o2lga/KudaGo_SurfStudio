@@ -79,10 +79,24 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        onBind(holder, position);
+    }
 
+    @Override
+    public int getItemCount() {
+
+        return events == null ? 0 : events.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
+    }
+
+    private void onBind(@NonNull RecyclerView.ViewHolder holder, int position) {
         Event event = events.get(position);
-        switch (getItemViewType(position)) {
 
+        switch (getItemViewType(position)) {
             case DEFAULT_LOADING:
 
                 final EventViewHolder eventViewHolder = (EventViewHolder) holder;
@@ -135,18 +149,6 @@ public class EventAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 break;
         }
-
-    }
-
-    @Override
-    public int getItemCount() {
-
-        return events == null ? 0 : events.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return (position == events.size() - 1 && isLoadingAdded) ? PAGINATION_LOADING : DEFAULT_LOADING;
     }
 
     public void add(Event event) {
