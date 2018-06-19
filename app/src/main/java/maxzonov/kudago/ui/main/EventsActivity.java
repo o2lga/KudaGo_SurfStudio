@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -165,6 +166,8 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
             Intent intent = new Intent(EventsActivity.this, CityActivity.class);
             intent.putStringArrayListExtra(INTENT_CITIES_ARRAY_ID, stringsCity);
             startActivityForResult(intent, CITY_REQUEST);
+        } else {
+            Toast.makeText(this, getString(R.string.main_city_error), Toast.LENGTH_LONG).show();
         }
     }
 
