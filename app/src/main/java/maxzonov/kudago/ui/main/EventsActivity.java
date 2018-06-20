@@ -105,15 +105,10 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
 
         initScrollViewListener();
 
-        if (Utility.isNetworkAvailable(this)) {
-            showLoadingProgress(true);
-            layoutNoInternet.setVisibility(View.GONE);
-            eventsPresenter.getData(compositeDisposable, currentCitySlug);
-            pageCounter++;
-        } else {
-            swipeRefresh.setRefreshing(false);
-            handleInternetError();
-        }
+        showLoadingProgress(true);
+        layoutNoInternet.setVisibility(View.GONE);
+        eventsPresenter.getData(this, compositeDisposable, currentCitySlug);
+        pageCounter++;
 
         initSwipeToRefresh();
     }
@@ -135,11 +130,7 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
 
             tvToolbarCity.setText(currentCityName);
 
-            if (Utility.isNetworkAvailable(this)) {
-                eventsPresenter.getData(compositeDisposable, citySlug);
-            } else {
-                handleInternetError();
-            }
+            eventsPresenter.getData(this, compositeDisposable, citySlug);
         }
     }
 
@@ -230,11 +221,7 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
 
     @Override
     public void retryPageLoad() {
-        if (Utility.isNetworkAvailable(this)) {
-            eventsPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
-        } else {
-            showPaginationError();
-        }
+        eventsPresenter.loadNextPage(this, compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
     }
 
     private void initRecyclerView() {
@@ -288,12 +275,7 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
                         if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                                 scrollY > oldScrollY) {
                             if (!isLoading) {
-                                if (Utility.isNetworkAvailable(this)) {
-                                    isLoading = true;
-                                    eventsPresenter.loadNextPage(compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
-                                } else {
-                                    showPaginationError();
-                                }
+                                eventsPresenter.loadNextPage(this, compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
                             }
                         }
                     }
@@ -303,14 +285,9 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     private void initSwipeToRefresh() {
         swipeRefresh.setOnRefreshListener(() -> {
             pageCounter = 1;
-            if (Utility.isNetworkAvailable(this)) {
-                layoutNoInternet.setVisibility(View.GONE);
-                eventsPresenter.getData(compositeDisposable, currentCitySlug);
-                pageCounter++;
-            } else {
-                swipeRefresh.setRefreshing(false);
-                handleInternetError();
-            }
+            layoutNoInternet.setVisibility(View.GONE);
+            eventsPresenter.getData(this, compositeDisposable, currentCitySlug);
+            pageCounter++;
         });
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
     }

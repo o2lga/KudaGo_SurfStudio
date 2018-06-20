@@ -1,5 +1,6 @@
 package maxzonov.kudago.ui.main;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
@@ -14,6 +15,7 @@ import maxzonov.kudago.model.ResponseData;
 import maxzonov.kudago.retrofit.EventApiService;
 import maxzonov.kudago.retrofit.CityApiService;
 import maxzonov.kudago.retrofit.RetrofitClient;
+import maxzonov.kudago.utils.Utility;
 
 @InjectViewState
 public class EventsPresenter extends MvpPresenter<EventsView> {
@@ -22,17 +24,21 @@ public class EventsPresenter extends MvpPresenter<EventsView> {
     private static final String CITY_MOSCOW_NAME = "Москва";
     private static final String CITY_SAINT_PETERSBURG_NAME = "Санкт-Петербург";
 
-    public void getData(CompositeDisposable compositeDisposable, String citySlug) {
+    public void getData(Context context, CompositeDisposable compositeDisposable, String citySlug) {
 
-        CityApiService cityApiService = RetrofitClient.getCityApiService();
-        compositeDisposable.add(cityApiService.getCityJson()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleCityDataResponse));
+        if (Utility.isNetworkAvailable(context)) {
+            CityApiService cityApiService = RetrofitClient.getCityApiService();
+            compositeDisposable.add(cityApiService.getCityJson()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::handleCityDataResponse));
 
-        EventApiService eventApiService = RetrofitClient.getApiService();
-        compositeDisposable.add(eventApiService.getJson(citySlug, FIRST_PAGE_TO_LOAD)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
+            EventApiService eventApiService = RetrofitClient.getApiService();
+            compositeDisposable.add(eventApiService.getJson(citySlug, FIRST_PAGE_TO_LOAD)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::handleFirstEventsDataResponse, this::handleFirstEventsDataResponseError));
+        } else {
+            getViewState().handleInternetError();
+        }
     }
 
     private void handleCityDataResponse(ArrayList<City> cities) {
@@ -51,12 +57,16 @@ public class EventsPresenter extends MvpPresenter<EventsView> {
         getViewState().handleInternetError();
     }
 
-    public void loadNextPage(CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
+    public void loadNextPage(Context context, CompositeDisposable compositeDisposable, String pageToLoad, String cityName) {
 
-        EventApiService apiService = RetrofitClient.getApiService();
-        compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::handleNextPageEventsDataResponse, this::handleNextPageEventsDataResponseError));
+        if (Utility.isNetworkAvailable(context)) {
+            EventApiService apiService = RetrofitClient.getApiService();
+            compositeDisposable.add(apiService.getJson(cityName, pageToLoad)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::handleNextPageEventsDataResponse, this::handleNextPageEventsDataResponseError));
+        } else {
+            getViewState().showPaginationError();
+        }
     }
 
     private void handleNextPageEventsDataResponse(ResponseData responseData) {
