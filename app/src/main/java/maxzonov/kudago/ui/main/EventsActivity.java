@@ -96,17 +96,13 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
 
         compositeDisposable = new CompositeDisposable();
 
-        prefsManager = new SharedPreferenceManager(this);
-        currentCitySlug = prefsManager.readFromPrefs("current_city_slug");
-        currentCityName = prefsManager.readFromPrefs("current_city_name");
-        tvToolbarCity.setText(currentCityName);
+        initSharedPrefs();
 
         initRecyclerView();
 
         initScrollViewListener();
 
         showLoadingProgress(true);
-        layoutNoInternet.setVisibility(View.GONE);
         eventsPresenter.getData(this, compositeDisposable, currentCitySlug);
         pageCounter++;
 
@@ -174,6 +170,7 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     @Override
     public void showLoadingProgress(boolean toShow) {
         if (toShow) {
+            layoutNoInternet.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
             layoutContent.setVisibility(View.GONE);
         } else {
@@ -222,6 +219,17 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     @Override
     public void retryPageLoad() {
         eventsPresenter.loadNextPage(this, compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
+    }
+
+    private void initSharedPrefs() {
+        prefsManager = new SharedPreferenceManager(this);
+        getCityFromSharedPrefs();
+    }
+
+    private void getCityFromSharedPrefs() {
+        currentCitySlug = prefsManager.readFromPrefs("current_city_slug");
+        currentCityName = prefsManager.readFromPrefs("current_city_name");
+        tvToolbarCity.setText(currentCityName);
     }
 
     private void initRecyclerView() {
