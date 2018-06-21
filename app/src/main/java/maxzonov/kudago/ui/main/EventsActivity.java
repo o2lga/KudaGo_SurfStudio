@@ -52,7 +52,6 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     private static final String INTENT_TITLE_ID = "title";
     private static final String INTENT_DATE_ID = "date";
     private static final String INTENT_PRICE_ID = "price";
-
     private static final String INTENT_CITIES_ARRAY_ID = "cities";
     private static final String INTENT_CITY_ID = "city";
 
@@ -72,11 +71,10 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     @BindView(R.id.main_pb) ProgressBar progressBar;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefresh;
     @BindView(R.id.main_toolbar) Toolbar toolbar;
+    @BindView(R.id.main_toolbar_tv_city) TextView tvToolbarCity;
 
     @BindView(R.id.main_layout_no_internet) LinearLayout layoutNoInternet;
     @BindView(R.id.main_layout_content) LinearLayout layoutContent;
-
-    @BindView(R.id.main_toolbar_tv_city) TextView tvToolbarCity;
 
     private EventAdapter eventAdapter;
 
@@ -94,19 +92,28 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         setSupportActionBar(toolbar);
         unbinder = ButterKnife.bind(this);
 
-        compositeDisposable = new CompositeDisposable();
-
-        initSharedPrefs();
-
         initRecyclerView();
 
+        getCityFromSharedPrefs();
+        requestPresenterForData();
+
         initScrollViewListener();
-
-        showLoadingProgress(true);
-        eventsPresenter.getData(this, compositeDisposable, currentCitySlug);
-        pageCounter++;
-
         initSwipeToRefresh();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("current_city_slug", currentCitySlug);
+        outState.putString("current_city_name", currentCityName);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+        compositeDisposable.dispose();
+        Glide.get(this).clearMemory();
     }
 
     @Override
@@ -130,24 +137,9 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("current_city_slug", currentCitySlug);
-        outState.putString("current_city_name", currentCityName);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
-        compositeDisposable.dispose();
-        Glide.get(this).clearMemory();
-    }
-
     @OnClick(R.id.main_toolbar_city_layout)
-    void onToolbarClicked() {
-        ArrayList<String> stringsCity = new ArrayList<>(fillCitiesArray());
+    void onToolbarCityClicked() {
+        ArrayList<String> stringsCity = new ArrayList<>(Utility.fillCitiesArray(cities));
 
         if (Utility.isNetworkAvailable(this)) {
             Intent intent = new Intent(EventsActivity.this, CityActivity.class);
@@ -221,12 +213,8 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         eventsPresenter.loadNextPage(this, compositeDisposable, String.valueOf(pageCounter++), currentCitySlug);
     }
 
-    private void initSharedPrefs() {
-        prefsManager = new SharedPreferenceManager(this);
-        getCityFromSharedPrefs();
-    }
-
     private void getCityFromSharedPrefs() {
+        prefsManager = new SharedPreferenceManager(this);
         currentCitySlug = prefsManager.readFromPrefs("current_city_slug");
         currentCityName = prefsManager.readFromPrefs("current_city_name");
         tvToolbarCity.setText(currentCityName);
@@ -240,6 +228,15 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
         eventAdapter = new EventAdapter(this, eventClickListener);
         recyclerView.setAdapter(eventAdapter);
     }
+
+    private void requestPresenterForData() {
+        compositeDisposable = new CompositeDisposable();
+        showLoadingProgress(true);
+        eventsPresenter.getData(this, compositeDisposable, currentCitySlug);
+        pageCounter++;
+    }
+
+    // START: Initializing intent object to details activity
 
     private void initEventClickListener() {
         eventClickListener = ((view, position, date) -> {
@@ -271,9 +268,11 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
     }
 
     private void constructImageIntent(Intent intent, Event event) {
-        ArrayList<String> imageUrls = new ArrayList<>(fillImagesArray(event));
+        ArrayList<String> imageUrls = new ArrayList<>(Utility.fillImagesArray(event));
         intent.putStringArrayListExtra(INTENT_IMAGES_URLS_ARRAY_ID, imageUrls);
     }
+
+    // END: Initializing intent object to details activity
 
     private void initScrollViewListener() {
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)
@@ -298,23 +297,5 @@ public class EventsActivity extends MvpAppCompatActivity implements EventsView, 
             pageCounter++;
         });
         swipeRefresh.setColorSchemeColors(getResources().getColor(R.color.colorAccent));
-    }
-
-    private ArrayList<String> fillImagesArray(Event event) {
-        ArrayList<String> imageUrls = new ArrayList<>();
-        for (int i = 0; i < event.getImages().size(); i++) {
-            imageUrls.add(event.getImages().get(i).getImageUrl());
-        }
-        return imageUrls;
-    }
-
-    private ArrayList<String> fillCitiesArray() {
-        ArrayList<String> stringsCity = new ArrayList<>();
-        int citySize = cities.size();
-        for (int i = 0; i < citySize; i++) {
-            City itemCity = cities.get(i);
-            stringsCity.add(itemCity.getName());
-        }
-        return stringsCity;
     }
 }
