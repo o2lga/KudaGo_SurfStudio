@@ -25,14 +25,17 @@
 
     <!-- Details screen -->
     <dimen name="details_iv_height_260dp">260dp</dimen>
-    <dimen name="details_component_margin_16dp">16dp</dimen>
     <dimen name="details_component_margin_8dp">8dp</dimen>
+    <dimen name="details_component_margin_14dp">14dp</dimen>
+    <dimen name="details_component_margin_16dp">16dp</dimen>
     <dimen name="details_title_margin_24dp">24dp</dimen>
     <dimen name="details_map_height_200dp">200dp</dimen>
     <dimen name="details_info_margin_24dp">24dp</dimen>
     <dimen name="details_page_indicator_size_8dp">8dp</dimen>
     <dimen name="details_component_margin_24dp">24dp</dimen>
     <dimen name="details_info_image_size_24dp">24dp</dimen>
+    <dimen name="details_btn_back_width_48dp">48dp</dimen>
+    <dimen name="details_btn_back_height_32dp">32dp</dimen>
 
     <!-- City list item -->
     <dimen name="city_item_height_56dp">56dp</dimen>

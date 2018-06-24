@@ -2,15 +2,15 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="@dimen/toolbar_height_56dp"
     android:orientation="horizontal"
     android:background="@color/colorTransparent">
 
     <ImageButton
         android:id="@+id/details_toolbar_btn_back"
-        android:layout_width="48dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="14dp"
+        android:layout_width="@dimen/details_btn_back_width_48dp"
+        android:layout_height="@dimen/details_btn_back_height_32dp"
+        android:layout_marginTop="@dimen/details_component_margin_14dp"
         android:layout_marginLeft="@dimen/details_component_margin_8dp"
         android:background="@drawable/details_toolbar_btn_rounded"
         android:src="@drawable/ic_arrow_back"/>
