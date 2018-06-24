@@ -11,6 +11,7 @@
         android:layout_width="48dp"
         android:layout_height="32dp"
         android:layout_marginTop="14dp"
+        android:layout_marginLeft="@dimen/details_component_margin_8dp"
         android:background="@drawable/details_toolbar_btn_rounded"
         android:src="@drawable/ic_arrow_back"/>
 

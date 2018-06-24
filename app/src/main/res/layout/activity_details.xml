@@ -8,203 +8,187 @@
     android:background="@color/colorPrimary"
     tools:context=".ui.details.DetailsActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp">
+        android:layout_height="match_parent">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:contentScrim="@color/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false">
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/details_iv_height_260dp">
-
-                <android.support.v4.view.ViewPager
-                    android:id="@+id/details_viewpager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <me.relex.circleindicator.CircleIndicator
-                    android:id="@+id/circle_indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center_horizontal"
-                    android:layout_marginBottom="@dimen/details_component_margin_8dp"
-                    app:ci_drawable_unselected="@drawable/dot_not_selected"
-                    app:ci_drawable="@drawable/dot_selected"
-                    app:ci_animator="@animator/circle_animator"
-                    app:ci_height="@dimen/details_page_indicator_size_8dp"
-                    app:ci_width="@dimen/details_page_indicator_size_8dp"/>
-            </FrameLayout>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/details_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/toolbar_height_56dp"
-                app:layout_collapseMode="pin"
-                android:elevation="0dp">
-
-                <include layout="@layout/toolbar_details"/>
-            </android.support.v7.widget.Toolbar>
-        </android.support.design.widget.CollapsingToolbarLayout>
-    </android.support.design.widget.AppBarLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/details_nested_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@color/colorPrimary">
-
-        <LinearLayout
-            android:id="@+id/details_linear_layout_content"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/details_nested_scroll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/details_component_margin_16dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/details_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/details_title_margin_24dp"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp"
-                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/details_title_size_20sp"
-                    android:textColor="@color/colorTvBlack"
-                    android:textStyle="bold"
-                    tools:text="Музыкальный фестиваль LiveFest Summer"/>
-
-                <TextView
-                    android:id="@+id/details_subtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp"
-                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
-                    android:textSize="@dimen/details_text_size_16sp"
-                    android:textColor="@color/colorTvBlack"
-                    tools:text="@string/details_text"/>
-
-                <TextView
-                    android:id="@+id/details_full_descr"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp"
-                    android:textSize="@dimen/details_text_size_16sp"
-                    android:textColor="@color/colorTvInfoGrey"
-                    tools:text="@string/details_text"/>
-            </LinearLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:background="@color/colorPrimary">
 
             <LinearLayout
+                android:id="@+id/details_linear_layout_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/details_component_margin_24dp"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/details_layout_location"
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp"
-                    android:layout_marginTop="@dimen/details_component_margin_8dp">
+                    android:layout_height="@dimen/details_iv_height_260dp">
 
-                    <ImageView
-                        android:layout_width="@dimen/details_info_image_size_24dp"
-                        android:layout_height="@dimen/details_info_image_size_24dp"
-                        android:src="@drawable/ic_location"
-                        android:scaleType="center"/>
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/details_viewpager"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
 
-                    <TextView
-                        android:id="@+id/details_tv_info_location"
+                    <me.relex.circleindicator.CircleIndicator
+                        android:id="@+id/circle_indicator"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="@string/item_info_location"
-                        style="@style/TextInfo"/>
+                        android:layout_gravity="bottom|center_horizontal"
+                        android:layout_marginBottom="@dimen/details_component_margin_8dp"
+                        app:ci_drawable_unselected="@drawable/dot_not_selected"
+                        app:ci_drawable="@drawable/dot_selected"
+                        app:ci_animator="@animator/circle_animator"
+                        app:ci_height="@dimen/details_page_indicator_size_8dp"
+                        app:ci_width="@dimen/details_page_indicator_size_8dp"/>
+                </FrameLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/details_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/details_title_margin_24dp"
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp"
+                        android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/details_title_size_20sp"
+                        android:textColor="@color/colorTvBlack"
+                        android:textStyle="bold"
+                        tools:text="Музыкальный фестиваль LiveFest Summer"/>
+
+                    <TextView
+                        android:id="@+id/details_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp"
+                        android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                        android:textSize="@dimen/details_text_size_16sp"
+                        android:textColor="@color/colorTvBlack"
+                        tools:text="@string/details_text"/>
+
+                    <TextView
+                        android:id="@+id/details_full_descr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp"
+                        android:textSize="@dimen/details_text_size_16sp"
+                        android:textColor="@color/colorTvInfoGrey"
+                        tools:text="@string/details_text"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/details_layout_date"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp"
-                    android:layout_marginTop="@dimen/details_component_margin_8dp">
+                    android:layout_marginBottom="@dimen/details_component_margin_24dp"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_width="@dimen/details_info_image_size_24dp"
-                        android:layout_height="@dimen/details_info_image_size_24dp"
-                        android:src="@drawable/ic_date"
-                        android:scaleType="center"/>
-
-                    <TextView
-                        android:id="@+id/details_tv_info_date"
+                    <LinearLayout
+                        android:id="@+id/details_layout_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="@string/item_info_date"
-                        style="@style/TextInfo"/>
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp"
+                        android:layout_marginTop="@dimen/details_component_margin_8dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/details_info_image_size_24dp"
+                            android:layout_height="@dimen/details_info_image_size_24dp"
+                            android:src="@drawable/ic_location"
+                            android:scaleType="center"/>
+
+                        <TextView
+                            android:id="@+id/details_tv_info_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/item_info_location"
+                            style="@style/TextInfo"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/details_layout_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp"
+                        android:layout_marginTop="@dimen/details_component_margin_8dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/details_info_image_size_24dp"
+                            android:layout_height="@dimen/details_info_image_size_24dp"
+                            android:src="@drawable/ic_date"
+                            android:scaleType="center"/>
+
+                        <TextView
+                            android:id="@+id/details_tv_info_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/item_info_date"
+                            style="@style/TextInfo"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/details_layout_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/details_component_margin_8dp"
+                        android:layout_marginLeft="@dimen/details_component_margin_16dp"
+                        android:layout_marginRight="@dimen/details_component_margin_16dp">
+
+                        <ImageView
+                            android:layout_width="@dimen/details_info_image_size_24dp"
+                            android:layout_height="@dimen/details_info_image_size_24dp"
+                            android:src="@drawable/ic_ruble"
+                            android:scaleType="center"/>
+
+                        <TextView
+                            android:id="@+id/details_tv_info_price"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/item_info_price"
+                            style="@style/TextInfo"/>
+                    </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/details_layout_price"
+                <FrameLayout
+                    android:id="@+id/details_layout_map"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/details_component_margin_8dp"
-                    android:layout_marginLeft="@dimen/details_component_margin_16dp"
-                    android:layout_marginRight="@dimen/details_component_margin_16dp">
+                    android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:layout_width="@dimen/details_info_image_size_24dp"
-                        android:layout_height="@dimen/details_info_image_size_24dp"
-                        android:src="@drawable/ic_ruble"
-                        android:scaleType="center"/>
-
-                    <TextView
-                        android:id="@+id/details_tv_info_price"
+                    <com.google.android.gms.maps.MapView
+                        android:id="@+id/details_map_view"
                         android:layout_width="match_parent"
+                        android:layout_height="@dimen/details_map_height_200dp"/>
+
+                    <Button
+                        android:id="@+id/details_btn_navigate"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="@string/item_info_price"
-                        style="@style/TextInfo"/>
-                </LinearLayout>
+                        android:text="Проложить маршрут"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:layout_marginBottom="@dimen/details_component_margin_16dp"
+                        android:background="@drawable/details_navigate_btn_rounded"
+                        android:paddingLeft="@dimen/details_component_margin_8dp"
+                        android:paddingRight="@dimen/details_component_margin_8dp"
+                        android:textColor="@color/colorAccent"/>
+                </FrameLayout>
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/details_layout_map"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        </android.support.v4.widget.NestedScrollView>
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/details_map_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/details_map_height_200dp"/>
+        <include layout="@layout/toolbar_details"/>
 
-                <Button
-                    android:id="@+id/details_btn_navigate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Проложить маршрут"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="@dimen/details_component_margin_16dp"
-                    android:background="@drawable/details_navigate_btn_rounded"
-                    android:paddingLeft="@dimen/details_component_margin_8dp"
-                    android:paddingRight="@dimen/details_component_margin_8dp"
-                    android:textColor="@color/colorAccent"/>
-            </FrameLayout>
-        </LinearLayout>
-
-    </android.support.v4.widget.NestedScrollView>
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>
