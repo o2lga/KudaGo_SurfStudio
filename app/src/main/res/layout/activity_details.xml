@@ -175,7 +175,7 @@
                         android:id="@+id/details_btn_navigate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Проложить маршрут"
+                        android:text="@string/details_btn_navigate_label"
                         android:layout_gravity="center_horizontal|bottom"
                         android:layout_marginBottom="@dimen/details_component_margin_16dp"
                         android:background="@drawable/details_navigate_btn_rounded"

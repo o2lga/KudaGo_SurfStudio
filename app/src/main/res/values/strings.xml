@@ -9,6 +9,9 @@
     <string name="main_item_error_tv">Ошибка загрузки</string>
     <string name="main_city_error">Проверьте соединение!</string>
 
+    <!-- Details screen -->
+    <string name="details_btn_navigate_label">Проложить маршрут</string>
+
     <!-- Test strings for layout -->
     <string name="item_title">Музыкальный фестиваль LiveFest Summer</string>
     <string name="item_details">Первый фестиваль LiveFest на курорте «Роза Хутор» собрал перспективные музыкальные проекты России и произвёл фурор у публики. Летняя версия будет ещё жарче и динамичнее, охватит ещё больше жанров, откроет новые имена и порадует свежими треками от признанных звёзд.</string>
