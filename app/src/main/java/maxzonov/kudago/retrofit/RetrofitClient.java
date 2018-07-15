@@ -11,18 +11,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
 
     private static final String BASE_URL = "https://kudago.com/public-api/v1.4/";
+    private static OkHttpClient client = new OkHttpClient();
+    private static GsonConverterFactory gsonConverterFactory = GsonConverterFactory.create();
 
     private static Retrofit getRetrofitInstance() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.addInterceptor(logging);
-        OkHttpClient client = builder.build();
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(gsonConverterFactory)
                 .build();
     }
 
